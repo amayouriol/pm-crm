@@ -1,0 +1,3 @@
+- [x] Add pasted LinkedIn summary to the shared applicant profile.
+- [x] Integrate Lovable AI Gateway without changing the existing summary.
+- [x] Verify input validation and a real coordinator summary flow.

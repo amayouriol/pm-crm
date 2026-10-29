@@ -15,6 +15,13 @@ import { EvaluationPanel } from "@/components/EvaluationPanel";
 import { Card } from "@/components/ui/card";
 
 export const Route = createFileRoute("/postulantes/$dni")({
+  head: () => ({ meta: [
+    { title: "Perfil de postulante | WIF Mentoría" },
+    { name: "description", content: "Perfil, experiencia y evaluación de postulantes de Women in Finance." },
+    { property: "og:title", content: "Perfil de postulante | WIF Mentoría" },
+    { property: "og:description", content: "Perfil, experiencia y evaluación de postulantes de Women in Finance." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+  ] }),
   component: ProfilePage,
 });
 

@@ -9,6 +9,13 @@ import { Card } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({ meta: [
+    { title: "Ingreso | WIF Mentoría" },
+    { name: "description", content: "Acceso del equipo al portal de mentoría Women in Finance." },
+    { property: "og:title", content: "Ingreso | WIF Mentoría" },
+    { property: "og:description", content: "Acceso del equipo al portal de mentoría Women in Finance." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+  ] }),
   component: LoginPage,
 });
 

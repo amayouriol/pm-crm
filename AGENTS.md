@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep pasted LinkedIn summaries in a separate server-function module with request-local Responses helpers; preserve the existing applicant-summary integration.
+- Mount the LinkedIn summarizer in the shared contact section and key it by applicant identity so pasted text and results never carry between applicants.
+- LinkedIn summaries are transient and do not write to Sheets or create new columns; copying is explicit.

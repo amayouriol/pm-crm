@@ -9,6 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/dashboard")({
+  head: () => ({ meta: [
+    { title: "Panel de Control | WIF Mentoría" },
+    { name: "description", content: "Seguimiento de postulantes y revisiones del programa Women in Finance." },
+    { property: "og:title", content: "Panel de Control | WIF Mentoría" },
+    { property: "og:description", content: "Seguimiento de postulantes y revisiones del programa Women in Finance." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+  ] }),
   component: Dashboard,
 });
 
