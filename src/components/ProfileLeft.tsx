@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Copy, ExternalLink, FileText, Linkedin, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
+import { LinkedInSummary } from "@/components/LinkedInSummary";
 
 function copy(text: string, label: string) {
   navigator.clipboard.writeText(text);
@@ -92,6 +93,7 @@ export function ProfileLeft({ data }: { data: Record<string, string> }) {
             <div className="mt-1.5 whitespace-pre-wrap text-sm">{refWif || "—"}</div>
           </div>
         </div>
+        <LinkedInSummary key={data["DNI"] || `${data["Nombres"]} ${data["Apellidos"]}`} />
       </Card>
 
       {/* TRAYECTORIA — pares en línea */}

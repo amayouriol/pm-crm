@@ -47,6 +47,13 @@ import { EvaluationPanel } from "@/components/EvaluationPanel";
 import { Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/directora")({
+  head: () => ({ meta: [
+    { title: "Panel Ejecutivo | WIF Mentoría" },
+    { name: "description", content: "Analíticas y resultados de selección de Women in Finance." },
+    { property: "og:title", content: "Panel Ejecutivo | WIF Mentoría" },
+    { property: "og:description", content: "Analíticas y resultados de selección de Women in Finance." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+  ] }),
   component: DirectoraView,
 });
 
