@@ -9,14 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DirectoraRouteImport } from './routes/directora'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DirectoraRouteImport } from './routes/directora'
 import { Route as PostulantesDniRouteImport } from './routes/postulantes.$dni'
 
-const DirectoraRoute = DirectoraRouteImport.update({
-  id: '/directora',
-  path: '/directora',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -24,9 +24,9 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DirectoraRoute = DirectoraRouteImport.update({
+  id: '/directora',
+  path: '/directora',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PostulantesDniRoute = PostulantesDniRouteImport.update({
@@ -71,11 +71,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/directora': {
-      id: '/directora'
-      path: '/directora'
-      fullPath: '/directora'
-      preLoaderRoute: typeof DirectoraRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -85,11 +85,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/directora': {
+      id: '/directora'
+      path: '/directora'
+      fullPath: '/directora'
+      preLoaderRoute: typeof DirectoraRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/postulantes/$dni': {
