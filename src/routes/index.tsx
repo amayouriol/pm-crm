@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, CalendarDays, ClipboardList, History, MousePointerClick } from "lucide-react";
+import { ArrowUpRight, CalendarDays, ClipboardList, History } from "lucide-react";
 import { requireSiteAccess } from "@/lib/gate.functions";
 import { TaskBoard } from "@/components/TaskBoard";
 import wifLogo from "@/assets/wif-logo.png.asset.json";
@@ -64,11 +64,6 @@ function TeamHome() {
         </header>
 
         <section aria-label="Accesos" className="mb-12">
-          <h2 className="wif-section-title mb-1">Accesos</h2>
-          <p className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MousePointerClick className="h-4 w-4 shrink-0 text-primary" />
-            Elige a dónde quieres ir
-          </p>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {SECTIONS.map((s) => {
               const Icon = s.icon;
