@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, CalendarDays, ClipboardList, History, MousePointerClick } from "lucide-react";
+import { ArrowUpRight, CalendarDays, ClipboardList, History } from "lucide-react";
 import { requireSiteAccess } from "@/lib/gate.functions";
 import { TaskBoard } from "@/components/TaskBoard";
 import wifLogo from "@/assets/wif-logo.png.asset.json";
