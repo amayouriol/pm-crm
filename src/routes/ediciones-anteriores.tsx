@@ -152,11 +152,21 @@ function EditionsPage() {
 
               <div className="lg:col-span-2">
                 <ChartSection title="Sectores de finanzas" note="Sectores declarados por las postulantes de todas las ediciones (top 12)">
-                  <ResponsiveContainer width="100%" height={Math.max(280, Math.min(editions.data.sectores.length, 12) * 30)}>
-                    <BarChart data={editions.data.sectores.slice(0, 12)} layout="vertical" accessibilityLayer>
+                  <ResponsiveContainer width="100%" height={Math.max(300, Math.min(editions.data.sectores.length, 12) * 38)}>
+                    <BarChart data={editions.data.sectores.slice(0, 12)} layout="vertical" accessibilityLayer margin={{ left: 8 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
                       <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
-                      <YAxis type="category" dataKey="name" width={180} tick={{ fontSize: 10 }} interval={0} />
+                      <YAxis
+                        type="category"
+                        dataKey="name"
+                        width={230}
+                        tick={{ fontSize: 10 }}
+                        interval={0}
+                        tickFormatter={(v) => {
+                          const s = String(v);
+                          return s.length > 40 ? s.slice(0, 39).trimEnd() + "…" : s;
+                        }}
+                      />
                       <Tooltip />
                       <Bar dataKey="postulantes" name="Postulantes" fill={COLORS[2]} radius={[0, 4, 4, 0]} />
                     </BarChart>
