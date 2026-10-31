@@ -46,6 +46,15 @@ export function ApplicationOverview({ rows }: { rows: OverviewRow[] }) {
         <div key={label}><dt className="text-sm text-muted-foreground">{label}</dt><dd className="mt-2 text-3xl font-light text-primary">{value}</dd></div>)}
     </dl>
     {rows.length === 0 ? <p className="text-sm text-muted-foreground">Aún no hay postulaciones registradas.</p> : <div className="grid grid-cols-1 gap-x-10 gap-y-8 lg:grid-cols-2">
+      <div className="lg:col-span-2"><ChartSection title="Avance por coordinadora">
+        <p className="mb-3 text-xs text-muted-foreground">Postulantes asignadas a cada coordinadora según su estado actual</p>
+        <ResponsiveContainer width="100%" height={Math.max(220, byCoord.length * 44)}><BarChart data={byCoord} layout="vertical" accessibilityLayer>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+          <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} /><YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 12 }} interval={0} />
+          <Tooltip cursor={{ fill: "var(--teal-softer)" }} /><Legend wrapperStyle={{ fontSize: 11 }} />
+          {["Fase 1", "Fase 2", "Pendiente directora", "Completadas"].map((k, i, arr) => <Bar key={k} dataKey={k} stackId="c" fill={COLORS[i]} radius={i === arr.length - 1 ? [0, 4, 4, 0] : 0} animationDuration={900} />)}
+        </BarChart></ResponsiveContainer>
+      </ChartSection></div>
       <ChartSection title="Funnel semanal de postulaciones">
         <p className="mb-3 text-xs text-muted-foreground">Semana de inscripción · Estado actual de cada grupo</p>
         {overview.weekly.length > 0 ? <ResponsiveContainer width="100%" height={280}>
@@ -83,15 +92,6 @@ export function ApplicationOverview({ rows }: { rows: OverviewRow[] }) {
           </Pie><Tooltip /><Legend wrapperStyle={{ fontSize: 11 }} />
         </PieChart></ResponsiveContainer>
       </ChartSection>
-      <div className="lg:col-span-2"><ChartSection title="Avance por coordinadora">
-        <p className="mb-3 text-xs text-muted-foreground">Postulantes asignadas a cada coordinadora según su estado actual</p>
-        <ResponsiveContainer width="100%" height={Math.max(220, byCoord.length * 44)}><BarChart data={byCoord} layout="vertical" accessibilityLayer>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-          <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} /><YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 12 }} interval={0} />
-          <Tooltip cursor={{ fill: "var(--teal-softer)" }} /><Legend wrapperStyle={{ fontSize: 11 }} />
-          {["Fase 1", "Fase 2", "Pendiente directora", "Completadas"].map((k, i, arr) => <Bar key={k} dataKey={k} stackId="c" fill={COLORS[i]} radius={i === arr.length - 1 ? [0, 4, 4, 0] : 0} animationDuration={900} />)}
-        </BarChart></ResponsiveContainer>
-      </ChartSection></div>
     </div>}
   </section>;
 }
