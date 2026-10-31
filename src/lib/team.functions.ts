@@ -22,6 +22,10 @@ export type ProgramEvent = {
   created_at: string;
 };
 
+// Column-shaped patches so the database client sees the declared field types.
+type TaskPatch = { titulo?: string; responsable?: string; estado?: string; fecha?: string | null };
+type EventPatch = { titulo?: string; descripcion?: string; fecha?: string; hora?: string; etapa?: string };
+
 // The shared team gate is the only credential this portal has, so the board
 // tables are reached through it and read/written with the privileged client.
 async function db() {
@@ -98,7 +102,7 @@ export const updateTask = createServerFn({ method: "POST" })
   .middleware([requireTeamGate])
   .inputValidator((d: unknown) => {
     const o = (d ?? {}) as Record<string, unknown>;
-    const out: Record<string, unknown> = { id: idOf(o.id) };
+    const out: TaskPatch & { id: string } = { id: idOf(o.id) };
     if ("titulo" in o) {
       const titulo = text(o.titulo, 200, "Título de la tarea");
       if (!titulo) throw new Error("Escribe el título de la tarea.");
@@ -115,7 +119,7 @@ export const updateTask = createServerFn({ method: "POST" })
     return out;
   })
   .handler(async ({ data }) => {
-    const { id, ...patch } = data as { id: string } & Record<string, unknown>;
+    const { id, ...patch } = data as { id: string } & TaskPatch;
     const { data: row, error } = await (await db())
       .from("program_tasks")
       .update({ ...patch, updated_at: new Date().toISOString() })
@@ -168,7 +172,7 @@ export const updateEvent = createServerFn({ method: "POST" })
   .middleware([requireTeamGate])
   .inputValidator((d: unknown) => {
     const o = (d ?? {}) as Record<string, unknown>;
-    const out: Record<string, unknown> = { id: idOf(o.id) };
+    const out: EventPatch & { id: string } = { id: idOf(o.id) };
     if ("titulo" in o) {
       const titulo = text(o.titulo, 120, "Título del evento");
       if (!titulo) throw new Error("Escribe el título del evento.");
@@ -182,7 +186,7 @@ export const updateEvent = createServerFn({ method: "POST" })
     return out;
   })
   .handler(async ({ data }) => {
-    const { id, ...patch } = data as { id: string } & Record<string, unknown>;
+    const { id, ...patch } = data as { id: string } & EventPatch;
     const { data: row, error } = await (await db())
       .from("program_events")
       .update(patch)
