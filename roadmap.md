@@ -8,4 +8,4 @@
 - [x] Verify “Salir de vista” returns both coordinator and director views to profile selection without relocking team access.
 - [x] Move all director charts to the unlocked main view with applicant totals and weekly applications.
 - [x] Keep profile selection and operational staff views; verify privacy, charts, and navigation.
-- [ ] Fix encrypted session persistence in embedded previews and verify password entry, refresh, and locked access.
+- [x] Fix encrypted session persistence in embedded previews and verify password entry, refresh, and locked access.
