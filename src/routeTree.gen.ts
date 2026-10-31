@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DirectoraRouteImport } from './routes/directora'
+import { Route as UnlockRouteImport } from './routes/unlock'
 import { Route as PostulantesDniRouteImport } from './routes/postulantes.$dni'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const DirectoraRoute = DirectoraRouteImport.update({
   path: '/directora',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UnlockRoute = UnlockRouteImport.update({
+  id: '/unlock',
+  path: '/unlock',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PostulantesDniRoute = PostulantesDniRouteImport.update({
   id: '/postulantes/$dni',
   path: '/postulantes/$dni',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,28 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/directora' | '/postulantes/$dni'
+  fullPaths: '/' | '/dashboard' | '/directora' | '/unlock' | '/postulantes/$dni'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/directora' | '/postulantes/$dni'
-  id: '__root__' | '/' | '/dashboard' | '/directora' | '/postulantes/$dni'
+  to: '/' | '/dashboard' | '/directora' | '/unlock' | '/postulantes/$dni'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/directora'
+    | '/unlock'
+    | '/postulantes/$dni'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   DirectoraRoute: typeof DirectoraRoute
+  UnlockRoute: typeof UnlockRoute
   PostulantesDniRoute: typeof PostulantesDniRoute
 }
 
@@ -92,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DirectoraRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/unlock': {
+      id: '/unlock'
+      path: '/unlock'
+      fullPath: '/unlock'
+      preLoaderRoute: typeof UnlockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/postulantes/$dni': {
       id: '/postulantes/$dni'
       path: '/postulantes/$dni'
@@ -106,6 +129,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   DirectoraRoute: DirectoraRoute,
+  UnlockRoute: UnlockRoute,
   PostulantesDniRoute: PostulantesDniRoute,
 }
 export const routeTree = rootRouteImport

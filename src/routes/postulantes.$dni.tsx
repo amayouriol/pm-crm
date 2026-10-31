@@ -10,11 +10,13 @@ import {
 } from "@/lib/sheets.functions";
 import { SCORECARD_COLS } from "@/lib/constants";
 import { useSession } from "@/lib/session";
+import { requireSiteAccess } from "@/lib/gate.functions";
 import { ProfileLeft } from "@/components/ProfileLeft";
 import { EvaluationPanel } from "@/components/EvaluationPanel";
 import { Card } from "@/components/ui/card";
 
 export const Route = createFileRoute("/postulantes/$dni")({
+  beforeLoad: () => requireSiteAccess(),
   head: () => ({ meta: [
     { title: "Perfil de postulante | WIF Mentoría" },
     { name: "description", content: "Perfil, experiencia y evaluación de postulantes de Women in Finance." },

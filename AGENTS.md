@@ -12,3 +12,5 @@
 - Keep pasted LinkedIn summaries in a separate server-function module with request-local Responses helpers; preserve the existing applicant-summary integration.
 - Mount the LinkedIn summarizer in the shared contact section and key it by applicant identity so pasted text and results never carry between applicants.
 - LinkedIn summaries are transient and do not write to Sheets or create new columns; copying is explicit.
+- Protect every CRM content route with the encrypted shared-team session and every private Sheets/AI server function with requireTeamGate; route guards alone do not secure RPC endpoints.
+- Keep team-password comparison and cookie utilities in a dynamically imported server-only module; runtime secrets are read inside server handlers or server middleware, never in client code.

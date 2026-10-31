@@ -1,7 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { generateText } from "ai";
+import { requireTeamGate } from "./gate.middleware";
 
 export const summarizeApplicant = createServerFn({ method: "POST" })
+  .middleware([requireTeamGate])
   .inputValidator((d: unknown) => {
     const obj = d as { profile?: string };
     if (!obj?.profile || typeof obj.profile !== "string") throw new Error("profile requerido");
