@@ -48,8 +48,8 @@ function UnlockPage() {
     <div className="w-full max-w-sm">
       <div className="mb-8 text-center">
         <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-lg bg-primary text-primary-foreground">WIF</div>
-        <h1 className="text-3xl font-light">Women in Finance</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Portal interno · Programa de Mentoría</p>
+        <h1 className="text-3xl font-light">Portal interno</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Inscripción al programa de mentoras</p>
       </div>
       <form method="post" onSubmit={submit} className="space-y-5">
         <h2 className="flex items-center gap-2 text-lg"><LockKeyhole className="h-5 w-5 text-primary" />Acceso privado</h2>
