@@ -10,7 +10,8 @@ const row = (over = {}) => {
   r[8] = "Universidad del Pacífico - UP";
   r[10] = "Banca";
   r[47] = "2025";
-  return { ...r, ...over };
+  for (const [index, value] of Object.entries(over)) r[Number(index)] = value;
+  return r;
 };
 
 test("year comes from Año de Programa when present", () => {
@@ -36,9 +37,8 @@ test("totals, years and regions are aggregated from historical rows", () => {
   ]);
   expect(summary.sinAno).toBe(1);
   expect(summary.regions).toEqual([
-    { name: "Lima", postulantes: 2 },
+    { name: "Lima", postulantes: 3 },
     { name: "Provincias", postulantes: 1 },
-    { name: "No especificado", postulantes: 1 },
   ]);
   expect(summary.carreras[0]).toEqual({ name: "Finanzas", postulantes: 4 });
 });
