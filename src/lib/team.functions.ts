@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireTeamGate } from "./gate.middleware";
-import { editionSummary } from "./editions";
+import { toEditionRecords } from "./editions";
 import { isTaskState } from "./team-board";
 
 export type Task = {
@@ -211,5 +211,5 @@ export const listEditions = createServerFn({ method: "GET" })
   .middleware([requireTeamGate])
   .handler(async () => {
     const { getValues } = await import("./sheets.server");
-    return editionSummary(await getValues("Historial_2024_2026!A2:AV"));
+    return toEditionRecords(await getValues("Historial_2024_2026!A2:AV"));
   });

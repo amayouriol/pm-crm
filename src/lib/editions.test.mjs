@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { editionSummary, editionYear } from "./editions.ts";
+import { editionSummary, editionYear, experienceBucket } from "./editions.ts";
 
 const row = (over = {}) => {
   const r = new Array(48).fill("");
@@ -41,4 +41,32 @@ test("totals, years and regions are aggregated from historical rows", () => {
     { name: "Provincias", postulantes: 1 },
   ]);
   expect(summary.carreras[0]).toEqual({ name: "Finanzas", postulantes: 4 });
+});
+
+test("funnel counts Postuladas → Preseleccionadas → Entrevistadas → Aceptadas for the chosen year", () => {
+  const values = [
+    row({ 47: "2025", 32: "Preseleccionada", 33: "Entrevistada", 44: "Seleccionada" }),
+    row({ 47: "2025", 32: "Preseleccionada", 33: "Sí", 44: "No seleccionada" }),
+    row({ 47: "2025", 32: "No seleccionada", 33: "#N/A" }),
+    row({ 47: "2024", 32: "Preseleccionada", 33: "Entrevistada", 44: "Seleccionada" }),
+  ];
+  expect(editionSummary(values, "2025").funnel.map((s) => s.cantidad)).toEqual([3, 2, 2, 1]);
+  expect(editionSummary(values).funnel.map((s) => s.cantidad)).toEqual([4, 3, 3, 2]);
+});
+
+test("experience text is grouped into ranges", () => {
+  expect(experienceBucket("Menos de 12 meses")).toBe("Menos de 1 año");
+  expect(experienceBucket("2")).toBe("1–2 años");
+  expect(experienceBucket("4 años")).toBe("3–4 años");
+  expect(experienceBucket("5")).toBe("5 años o más");
+});
+
+test("career spelling variants are counted together", () => {
+  const s = editionSummary([row({ 7: "Economía" }), row({ 7: "Economia" }), row({ 7: "ECONOMIA " }), row({ 7: "Derecho" })]);
+  expect(s.carreras[0]).toEqual({ name: "Economía", postulantes: 3 });
+});
+
+test("an accepted applicant counts as preseleccionada and entrevistada even if those marks are empty", () => {
+  const s = editionSummary([row({ 44: "Seleccionada" }), row({})]);
+  expect(s.funnel.map((f) => f.cantidad)).toEqual([2, 1, 1, 1]);
 });
