@@ -87,15 +87,18 @@ export function toEditionRecords(values: string[][]): EditionRecord[] {
     if (!(row[DNI_COL] ?? "").trim() && !(row[NOMBRES_COL] ?? "").trim()) continue; // blank padding row
     const r1 = norm(row[RESULTADO_F1_COL]).replace(/\s+/g, "");
     const r2 = norm(row[RESULTADO_F2_COL]);
+    // A later stage implies the earlier ones (2024 rows often skip Fase 1 / entrevista marks).
+    const aceptada = r2 === "seleccionada";
+    const entrevistada = aceptada || r2 === "no seleccionada" || isInterviewed(row[STATUS_ENTREVISTA_COL]);
     out.push({
       year: editionYear(row),
       carrera: (row[CARRERA_COL] ?? "").trim(),
       universidad: (row[UNIVERSIDAD_COL] ?? "").trim(),
       sector: (row[SECTOR_COL] ?? "").trim(),
       experiencia: experienceBucket(row[EXPERIENCIA_COL]),
-      preseleccionada: r1 === "preseleccionada",
-      entrevistada: isInterviewed(row[STATUS_ENTREVISTA_COL]),
-      aceptada: r2 === "seleccionada",
+      preseleccionada: entrevistada || r1 === "preseleccionada",
+      entrevistada,
+      aceptada,
     });
   }
   return out;

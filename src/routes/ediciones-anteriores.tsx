@@ -13,6 +13,7 @@ import {
   PieChart,
   Cell,
   LabelList,
+  Legend,
 } from "recharts";
 import { ArrowLeft } from "lucide-react";
 import { requireSiteAccess } from "@/lib/gate.functions";
@@ -228,6 +229,7 @@ function EditionsPage() {
                     <XAxis dataKey="year" tick={{ fontSize: 12 }} />
                     <YAxis allowDecimals={false} tick={{ fontSize: 11 }} width={36} />
                     <Tooltip />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
                     {["Postuladas", "Preseleccionadas", "Entrevistadas", "Aceptadas"].map((k, i) => (
                       <Bar key={k} dataKey={k} fill={COLORS[i]} radius={[4, 4, 0, 0]}>
                         <LabelList dataKey={k} position="top" fontSize={10} />

@@ -65,3 +65,8 @@ test("career spelling variants are counted together", () => {
   const s = editionSummary([row({ 7: "Economía" }), row({ 7: "Economia" }), row({ 7: "ECONOMIA " }), row({ 7: "Derecho" })]);
   expect(s.carreras[0]).toEqual({ name: "Economía", postulantes: 3 });
 });
+
+test("an accepted applicant counts as preseleccionada and entrevistada even if those marks are empty", () => {
+  const s = editionSummary([row({ 44: "Seleccionada" }), row({})]);
+  expect(s.funnel.map((f) => f.cantidad)).toEqual([2, 1, 1, 1]);
+});
