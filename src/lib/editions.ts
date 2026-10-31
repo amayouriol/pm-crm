@@ -105,6 +105,24 @@ function bump(map: Map<string, number>, key: string) {
   map.set(key, (map.get(key) ?? 0) + 1);
 }
 
+/** Groups spelling variants ("Economía", "Economia", "ECONOMIA") under the most common written form. */
+function bumpText(map: Map<string, Map<string, number>>, raw: string) {
+  const label = raw || "No especificado";
+  const key = norm(label).replace(/\s+/g, " ");
+  const forms = map.get(key) ?? new Map<string, number>();
+  bump(forms, label);
+  map.set(key, forms);
+}
+
+function collapse(map: Map<string, Map<string, number>>): Map<string, number> {
+  const out = new Map<string, number>();
+  for (const forms of map.values()) {
+    const [label] = [...forms].sort((a, b) => b[1] - a[1])[0];
+    out.set(label, [...forms.values()].reduce((a, n) => a + n, 0));
+  }
+  return out;
+}
+
 function topSlices(map: Map<string, number>, limit?: number): EditionSlice[] {
   const out = [...map].map(([name, postulantes]) => ({ name, postulantes })).sort((a, b) => b.postulantes - a.postulantes);
   return limit ? out.slice(0, limit) : out;
@@ -118,9 +136,9 @@ export function summarizeEditions(records: EditionRecord[], year = "todos"): Edi
   const rows = year && year !== "todos" ? records.filter((r) => r.year === year) : records;
   const regions = new Map<string, number>();
   const tipos = new Map<string, number>();
-  const universidades = new Map<string, number>();
-  const carreras = new Map<string, number>();
-  const sectores = new Map<string, number>();
+  const universidades = new Map<string, Map<string, number>>();
+  const carreras = new Map<string, Map<string, number>>();
+  const sectores = new Map<string, Map<string, number>>();
   const experiencia = new Map<string, number>();
   let pre = 0;
   let ent = 0;
@@ -131,9 +149,9 @@ export function summarizeEditions(records: EditionRecord[], year = "todos"): Edi
     if (!r.year) sinAno++;
     bump(regions, regionForUniversity(r.universidad));
     bump(tipos, universityType(r.universidad));
-    bump(universidades, r.universidad || "No especificado");
-    bump(carreras, r.carrera || "No especificado");
-    bump(sectores, r.sector || "No especificado");
+    bumpText(universidades, r.universidad);
+    bumpText(carreras, r.carrera);
+    bumpText(sectores, r.sector);
     bump(experiencia, r.experiencia);
     if (r.preseleccionada) pre++;
     if (r.entrevistada) ent++;
@@ -157,9 +175,9 @@ export function summarizeEditions(records: EditionRecord[], year = "todos"): Edi
     tipoUniversidad: ["Pública", "Privada", "No especificado"]
       .filter((t) => tipos.has(t))
       .map((t) => ({ name: t, postulantes: tipos.get(t)! })),
-    universidades: topSlices(universidades, 10),
-    carreras: topSlices(carreras, 12),
-    sectores: topSlices(sectores),
+    universidades: topSlices(collapse(universidades), 10),
+    carreras: topSlices(collapse(carreras), 12),
+    sectores: topSlices(collapse(sectores)),
     experiencia: EXPERIENCE_BUCKETS.filter((b) => experiencia.has(b)).map((b) => ({ name: b, postulantes: experiencia.get(b)! })),
   };
 }

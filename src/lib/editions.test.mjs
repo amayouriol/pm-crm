@@ -60,3 +60,8 @@ test("experience text is grouped into ranges", () => {
   expect(experienceBucket("4 años")).toBe("3–4 años");
   expect(experienceBucket("5")).toBe("5 años o más");
 });
+
+test("career spelling variants are counted together", () => {
+  const s = editionSummary([row({ 7: "Economía" }), row({ 7: "Economia" }), row({ 7: "ECONOMIA " }), row({ 7: "Derecho" })]);
+  expect(s.carreras[0]).toEqual({ name: "Economía", postulantes: 3 });
+});
