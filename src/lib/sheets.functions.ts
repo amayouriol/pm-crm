@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireTeamGate } from "./gate.middleware";
 import {
   COLS,
+  DIRECTORA_NAME,
   SCORECARD_COLS,
   SHEET_APPLICANTS,
   SHEET_MENTORAS,
@@ -40,13 +41,35 @@ function rowToRecord(row: string[]): Record<string, string> {
 
 // ---------- Read: all applicants ----------
 export const listApplicants = createServerFn({ method: "GET" }).middleware([requireTeamGate]).handler(async () => {
-  const { getValues } = await import("./sheets.server");
+  const { getValues, batchUpdateValues } = await import("./sheets.server");
   const values = await getValues(`${SHEET_APPLICANTS}!A2:AY`);
-  const rows: ApplicantRow[] = values.map((row, i) => ({
-    rowNumber: i + 2,
-    data: rowToRecord(row),
-  }));
-  return rows.filter((r) => (r.data["DNI"] ?? "").trim().length > 0);
+  const rows: ApplicantRow[] = values
+    .map((row, i) => ({ rowNumber: i + 2, data: rowToRecord(row) }))
+    .filter((r) => (r.data["DNI"] ?? "").trim().length > 0);
+
+  // Automatic, balanced, random assignment of unassigned applicants.
+  try {
+    const staff = await getValues(`${SHEET_STAFF}!A2:G`);
+    const reviewers = staff
+      .filter((r) => (r[0] ?? "").trim() && String(r[6] ?? "").toUpperCase() === "TRUE")
+      .map((r) => ({ nombreCompleto: `${r[0] ?? ""} ${r[1] ?? ""}`.trim(), nombreCorto: (r[3] ?? "").trim() }))
+      .filter((r) => r.nombreCorto && r.nombreCompleto.toLowerCase() !== DIRECTORA_NAME.toLowerCase());
+    const { planAssignments } = await import("./auto-assign");
+    const plan = planAssignments(rows.map((r) => r.data), reviewers);
+    if (plan.size > 0) {
+      const letter = colLetter(colIndexOf("Encargada de la revisión:"));
+      await batchUpdateValues(
+        [...plan].map(([i, name]) => ({
+          range: `${SHEET_APPLICANTS}!${letter}${rows[i].rowNumber}:${letter}${rows[i].rowNumber}`,
+          values: [[name]],
+        })),
+      );
+      for (const [i, name] of plan) rows[i].data["Encargada de la revisión:"] = name;
+    }
+  } catch (e) {
+    console.error("[auto-assign] failed:", e);
+  }
+  return rows;
 });
 
 // ---------- Read: single applicant by DNI ----------
