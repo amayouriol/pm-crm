@@ -37,9 +37,9 @@ function LoginPage() {
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 flex items-center gap-4 border-b border-border pb-6">
           <img src={wifLogo.url} alt="Women in Finance" className="h-14 w-auto shrink-0 rounded-lg" />
-          <div><h1 className="text-3xl font-light">Portal interno</h1>
+          <div><h1 className="text-3xl font-light">Programa de mentoras</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Inscripción al programa de mentoras · Women in Finance
+            Inscripción al programa de mentoras 2027
           </p>
           </div>
         </header>
