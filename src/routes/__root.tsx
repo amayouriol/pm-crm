@@ -14,7 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SessionProvider, useSession } from "../lib/session";
 import { Toaster } from "sonner";
-import { lockSite } from "@/lib/gate.functions";
+import { exitView } from "@/lib/exit-view";
 import { Button } from "@/components/ui/button";
 
 function NotFoundComponent() {
@@ -152,16 +152,15 @@ function TopBar() {
           <Button
             variant="outline"
             size="sm"
-            onClick={async () => {
-              await queryClient.cancelQueries();
-              await lockSite();
-              queryClient.clear();
-              setSession(null);
-              await router.navigate({ to: "/unlock", replace: true });
-            }}
+            onClick={() => exitView({
+              cancelQueries: () => queryClient.cancelQueries(),
+              clearQueries: () => queryClient.clear(),
+              clearProfile: () => setSession(null),
+              showProfiles: () => router.navigate({ to: "/", replace: true }),
+            })}
             className="ml-2 rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
           >
-            Salir
+            Salir de vista
           </Button>
         </nav>
       </div>
