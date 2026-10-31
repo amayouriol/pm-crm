@@ -19,3 +19,5 @@
 - Keep team-wide application analytics in a browser-safe shared overview on the password-protected index; derive weekly cohorts from existing Sheets timestamps and decisions without adding columns, leaving staff routes operational.
 - Assign unassigned applicants automatically in listApplicants via the pure auto-assign planner (balanced counts, random ties, referenced coordinators excluded); never reassign existing reviewers.
 - Previous-application flags are derived at read time from the Historial sheet by DNI via the browser-safe history helper; never written back to Sheets.
+- Keep the team portal at "/" as the entry hub and the staff selector plus application overview at "/inscripcion"; shared board data (tasks, events) lives in app tables reached only through the team gate, never in Sheets.
+- Keep historical-edition analytics derived at read time from the Historial sheet via the browser-safe editions helper, with no writes back to Sheets.

@@ -123,7 +123,7 @@ function TopBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-6 py-3">
-        <Link to="/dashboard" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <img src={wifLogo.url} alt="Women in Finance" className="h-8 w-auto rounded-md" />
           <div className="leading-tight">
             <div className="text-sm">Women in Finance</div>
@@ -139,7 +139,7 @@ function TopBar() {
               cancelQueries: () => queryClient.cancelQueries(),
               clearQueries: () => queryClient.clear(),
               clearProfile: () => setSession(null),
-              showProfiles: () => router.navigate({ to: "/", replace: true }),
+              showProfiles: () => router.navigate({ to: "/inscripcion", replace: true }),
             })}
             className="ml-2 rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
           >

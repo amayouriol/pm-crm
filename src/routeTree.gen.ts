@@ -10,14 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CronogramaRouteImport } from './routes/cronograma'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DirectoraRouteImport } from './routes/directora'
+import { Route as EdicionesAnterioresRouteImport } from './routes/ediciones-anteriores'
+import { Route as InscripcionRouteImport } from './routes/inscripcion'
 import { Route as UnlockRouteImport } from './routes/unlock'
 import { Route as PostulantesDniRouteImport } from './routes/postulantes.$dni'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CronogramaRoute = CronogramaRouteImport.update({
+  id: '/cronograma',
+  path: '/cronograma',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -28,6 +36,16 @@ const DashboardRoute = DashboardRouteImport.update({
 const DirectoraRoute = DirectoraRouteImport.update({
   id: '/directora',
   path: '/directora',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EdicionesAnterioresRoute = EdicionesAnterioresRouteImport.update({
+  id: '/ediciones-anteriores',
+  path: '/ediciones-anteriores',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InscripcionRoute = InscripcionRouteImport.update({
+  id: '/inscripcion',
+  path: '/inscripcion',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UnlockRoute = UnlockRouteImport.update({
@@ -43,44 +61,75 @@ const PostulantesDniRoute = PostulantesDniRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cronograma': typeof CronogramaRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/ediciones-anteriores': typeof EdicionesAnterioresRoute
+  '/inscripcion': typeof InscripcionRoute
   '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cronograma': typeof CronogramaRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/ediciones-anteriores': typeof EdicionesAnterioresRoute
+  '/inscripcion': typeof InscripcionRoute
   '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cronograma': typeof CronogramaRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/ediciones-anteriores': typeof EdicionesAnterioresRoute
+  '/inscripcion': typeof InscripcionRoute
   '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/directora' | '/unlock' | '/postulantes/$dni'
+  fullPaths:
+    | '/'
+    | '/cronograma'
+    | '/dashboard'
+    | '/directora'
+    | '/ediciones-anteriores'
+    | '/inscripcion'
+    | '/unlock'
+    | '/postulantes/$dni'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/directora' | '/unlock' | '/postulantes/$dni'
+  to:
+    | '/'
+    | '/cronograma'
+    | '/dashboard'
+    | '/directora'
+    | '/ediciones-anteriores'
+    | '/inscripcion'
+    | '/unlock'
+    | '/postulantes/$dni'
   id:
     | '__root__'
     | '/'
+    | '/cronograma'
     | '/dashboard'
     | '/directora'
+    | '/ediciones-anteriores'
+    | '/inscripcion'
     | '/unlock'
     | '/postulantes/$dni'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CronogramaRoute: typeof CronogramaRoute
   DashboardRoute: typeof DashboardRoute
   DirectoraRoute: typeof DirectoraRoute
+  EdicionesAnterioresRoute: typeof EdicionesAnterioresRoute
+  InscripcionRoute: typeof InscripcionRoute
   UnlockRoute: typeof UnlockRoute
   PostulantesDniRoute: typeof PostulantesDniRoute
 }
@@ -92,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cronograma': {
+      id: '/cronograma'
+      path: '/cronograma'
+      fullPath: '/cronograma'
+      preLoaderRoute: typeof CronogramaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -106,6 +162,20 @@ declare module '@tanstack/react-router' {
       path: '/directora'
       fullPath: '/directora'
       preLoaderRoute: typeof DirectoraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ediciones-anteriores': {
+      id: '/ediciones-anteriores'
+      path: '/ediciones-anteriores'
+      fullPath: '/ediciones-anteriores'
+      preLoaderRoute: typeof EdicionesAnterioresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inscripcion': {
+      id: '/inscripcion'
+      path: '/inscripcion'
+      fullPath: '/inscripcion'
+      preLoaderRoute: typeof InscripcionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/unlock': {
@@ -127,8 +197,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CronogramaRoute: CronogramaRoute,
   DashboardRoute: DashboardRoute,
   DirectoraRoute: DirectoraRoute,
+  EdicionesAnterioresRoute: EdicionesAnterioresRoute,
+  InscripcionRoute: InscripcionRoute,
   UnlockRoute: UnlockRoute,
   PostulantesDniRoute: PostulantesDniRoute,
 }

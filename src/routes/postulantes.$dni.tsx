@@ -35,7 +35,7 @@ function ProfilePage() {
   const qc = useQueryClient();
 
   useEffect(() => {
-    if (hydrated && !session) navigate({ to: "/" });
+    if (hydrated && !session) navigate({ to: "/inscripcion" });
   }, [session, navigate]);
 
   const applicant = useQuery({
