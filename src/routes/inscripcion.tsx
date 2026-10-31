@@ -13,9 +13,9 @@ import wifLogo from "@/assets/wif-logo.png.asset.json";
 export const Route = createFileRoute("/inscripcion")({
   beforeLoad: () => requireSiteAccess(),
   head: () => ({ meta: [
-    { title: "Resumen del equipo | WIF Mentoría" },
+    { title: "Inscripción al programa de mentoras 2027 | WIF Mentoría" },
     { name: "description", content: "Resumen interno de postulaciones, avance semanal y acceso a las vistas del equipo de Women in Finance." },
-    { property: "og:title", content: "Resumen del equipo | WIF Mentoría" },
+    { property: "og:title", content: "Inscripción al programa de mentoras 2027 | WIF Mentoría" },
     { property: "og:description", content: "Resumen interno de postulaciones, avance semanal y acceso a las vistas del equipo de Women in Finance." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
