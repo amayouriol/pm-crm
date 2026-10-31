@@ -4,10 +4,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -155,25 +151,15 @@ function EditionsPage() {
               </ChartSection>
 
               <div className="lg:col-span-2">
-                <ChartSection title="Sectores de finanzas">
-                  <ResponsiveContainer width="100%" height={320}>
-                    <PieChart accessibilityLayer>
-                      <Pie
-                        data={editions.data.sectores}
-                        dataKey="postulantes"
-                        nameKey="name"
-                        cx="50%"
-                        cy="42%"
-                        innerRadius={50}
-                        outerRadius={95}
-                      >
-                        {editions.data.sectores.map((sector, i) => (
-                          <Cell key={sector.name} fill={COLORS[i % COLORS.length]} />
-                        ))}
-                      </Pie>
+                <ChartSection title="Sectores de finanzas" note="Sectores declarados por las postulantes de todas las ediciones (top 12)">
+                  <ResponsiveContainer width="100%" height={Math.max(280, Math.min(editions.data.sectores.length, 12) * 30)}>
+                    <BarChart data={editions.data.sectores.slice(0, 12)} layout="vertical" accessibilityLayer>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+                      <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
+                      <YAxis type="category" dataKey="name" width={180} tick={{ fontSize: 10 }} interval={0} />
                       <Tooltip />
-                      <Legend wrapperStyle={{ fontSize: 11 }} />
-                    </PieChart>
+                      <Bar dataKey="postulantes" name="Postulantes" fill={COLORS[2]} radius={[0, 4, 4, 0]} />
+                    </BarChart>
                   </ResponsiveContainer>
                 </ChartSection>
               </div>
