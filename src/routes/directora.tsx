@@ -70,8 +70,11 @@ function DirectoraView() {
   return (
     <main className="mx-auto max-w-[1600px] px-6 py-8">
       <div className="mb-6">
-        <p className="wif-section-title">Vista Directora</p>
-        <h1 className="mt-1 text-3xl font-light">Panel Ejecutivo</h1>
+        <p className="wif-section-title">Panel ejecutivo</p>
+        <h1 className="mt-1 text-3xl font-light">Bienvenida, {session.nombreCompleto.split(" ")[0]}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Vista de todas las postulantes y resultados del programa
+        </p>
       </div>
 
       <div className="mb-6 flex gap-1 border-b border-border">
