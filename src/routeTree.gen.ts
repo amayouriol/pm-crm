@@ -9,12 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DirectoraRouteImport } from './routes/directora'
+import { Route as EdicionesAnterioresRouteImport } from './routes/ediciones-anteriores'
 import { Route as InscripcionRouteImport } from './routes/inscripcion'
 import { Route as UnlockRouteImport } from './routes/unlock'
 import { Route as PostulantesDniRouteImport } from './routes/postulantes.$dni'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -23,6 +30,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const DirectoraRoute = DirectoraRouteImport.update({
   id: '/directora',
   path: '/directora',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EdicionesAnterioresRoute = EdicionesAnterioresRouteImport.update({
+  id: '/ediciones-anteriores',
+  path: '/ediciones-anteriores',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InscripcionRoute = InscripcionRouteImport.update({
@@ -42,23 +54,29 @@ const PostulantesDniRoute = PostulantesDniRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/ediciones-anteriores': typeof EdicionesAnterioresRoute
   '/inscripcion': typeof InscripcionRoute
   '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/ediciones-anteriores': typeof EdicionesAnterioresRoute
   '/inscripcion': typeof InscripcionRoute
   '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
+  '/ediciones-anteriores': typeof EdicionesAnterioresRoute
   '/inscripcion': typeof InscripcionRoute
   '/unlock': typeof UnlockRoute
   '/postulantes/$dni': typeof PostulantesDniRoute
@@ -66,30 +84,38 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/dashboard'
     | '/directora'
+    | '/ediciones-anteriores'
     | '/inscripcion'
     | '/unlock'
     | '/postulantes/$dni'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/dashboard'
     | '/directora'
+    | '/ediciones-anteriores'
     | '/inscripcion'
     | '/unlock'
     | '/postulantes/$dni'
   id:
     | '__root__'
+    | '/'
     | '/dashboard'
     | '/directora'
+    | '/ediciones-anteriores'
     | '/inscripcion'
     | '/unlock'
     | '/postulantes/$dni'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   DirectoraRoute: typeof DirectoraRoute
+  EdicionesAnterioresRoute: typeof EdicionesAnterioresRoute
   InscripcionRoute: typeof InscripcionRoute
   UnlockRoute: typeof UnlockRoute
   PostulantesDniRoute: typeof PostulantesDniRoute
@@ -97,6 +123,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -109,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/directora'
       fullPath: '/directora'
       preLoaderRoute: typeof DirectoraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ediciones-anteriores': {
+      id: '/ediciones-anteriores'
+      path: '/ediciones-anteriores'
+      fullPath: '/ediciones-anteriores'
+      preLoaderRoute: typeof EdicionesAnterioresRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inscripcion': {
@@ -136,8 +176,10 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   DirectoraRoute: DirectoraRoute,
+  EdicionesAnterioresRoute: EdicionesAnterioresRoute,
   InscripcionRoute: InscripcionRoute,
   UnlockRoute: UnlockRoute,
   PostulantesDniRoute: PostulantesDniRoute,
