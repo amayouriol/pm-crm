@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      program_events: {
+        Row: {
+          created_at: string
+          descripcion: string
+          etapa: string
+          fecha: string
+          hora: string
+          id: string
+          titulo: string
+        }
+        Insert: {
+          created_at?: string
+          descripcion?: string
+          etapa?: string
+          fecha: string
+          hora?: string
+          id?: string
+          titulo: string
+        }
+        Update: {
+          created_at?: string
+          descripcion?: string
+          etapa?: string
+          fecha?: string
+          hora?: string
+          id?: string
+          titulo?: string
+        }
+        Relationships: []
+      }
+      program_tasks: {
+        Row: {
+          created_at: string
+          estado: string
+          fecha: string | null
+          id: string
+          responsable: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          estado?: string
+          fecha?: string | null
+          id?: string
+          responsable?: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          estado?: string
+          fecha?: string | null
+          id?: string
+          responsable?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
