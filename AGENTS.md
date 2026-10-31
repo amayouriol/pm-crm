@@ -14,3 +14,4 @@
 - LinkedIn summaries are transient and do not write to Sheets or create new columns; copying is explicit.
 - Protect every CRM content route with the encrypted shared-team session and every private Sheets/AI server function with requireTeamGate; route guards alone do not secure RPC endpoints.
 - Keep team-password comparison and cookie utilities in a dynamically imported server-only module; runtime secrets are read inside server handlers or server middleware, never in client code.
+- Coordinate profile-exit cache cancellation, cache clearing, profile reset, and selector navigation in the browser-safe exitView helper so leaving a view remains separate from revoking the encrypted team gate.
