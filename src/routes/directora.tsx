@@ -1,3 +1,4 @@
+import { PreviousBadges } from "@/components/PreviousBadges";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -109,7 +110,7 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
 
 type Filter = "todas" | "fase1" | "fase2" | "pendienteDir" | "hechas";
 
-function PanelDeControlTab({ rows }: { rows: Array<{ data: Record<string, string> }> }) {
+function PanelDeControlTab({ rows }: { rows: Array<{ data: Record<string, string>; previousYears?: string[] }> }) {
   const [filter, setFilter] = useState<Filter>("todas");
   const [q, setQ] = useState("");
   const [openDni, setOpenDni] = useState<string | null>(null);
@@ -197,6 +198,7 @@ function PanelDeControlTab({ rows }: { rows: Array<{ data: Record<string, string
                     {a.data["¿Candidata destacada?"]?.toLowerCase().includes("true") && (
                       <Badge className="ml-2 bg-[var(--teal-soft)] text-primary" variant="outline">Destacada</Badge>
                     )}
+                    <PreviousBadges years={a.previousYears} />
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{a.data["DNI"]}</td>
                   <td className="px-4 py-3">{a.data["Encargada de la revisión:"] || "—"}</td>

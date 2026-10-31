@@ -16,7 +16,19 @@ import {
 export type ApplicantRow = {
   rowNumber: number; // 1-indexed sheet row
   data: Record<string, string>; // by column header
+  previousYears?: string[]; // years found in Historial_2024_2026 by DNI
 };
+
+async function loadHistory() {
+  try {
+    const { getValues } = await import("./sheets.server");
+    const { historyYears } = await import("./history");
+    return historyYears(await getValues("Historial_2024_2026!A2:AV"));
+  } catch (e) {
+    console.error("[history] failed:", e);
+    return new Map<string, string[]>();
+  }
+}
 
 export type StaffMember = {
   nombreCompleto: string; // "Andrea Mayo"
@@ -69,6 +81,9 @@ export const listApplicants = createServerFn({ method: "GET" }).middleware([requ
   } catch (e) {
     console.error("[auto-assign] failed:", e);
   }
+  const history = await loadHistory();
+  const { normDni } = await import("./history");
+  for (const r of rows) r.previousYears = history.get(normDni(r.data["DNI"])) ?? [];
   return rows;
 });
 
@@ -86,9 +101,12 @@ export const getApplicantByDni = createServerFn({ method: "GET" })
     const dniCol = colIndexOf("DNI");
     const idx = values.findIndex((row) => (row[dniCol] ?? "").trim() === data.dni);
     if (idx === -1) return null;
+    const history = await loadHistory();
+    const { normDni } = await import("./history");
     return {
       rowNumber: idx + 2,
       data: rowToRecord(values[idx]),
+      previousYears: history.get(normDni(data.dni)) ?? [],
     } satisfies ApplicantRow;
   });
 
