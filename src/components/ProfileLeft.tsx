@@ -1,6 +1,17 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, ExternalLink, FileText, Linkedin, Mail, Phone } from "lucide-react";
+import { useState, type ComponentType } from "react";
+import { ChevronDown, Copy, ExternalLink, FileText, Gem, Handshake, Heart, Linkedin, Mail, Phone, Sparkles, Star, Target, UserRound } from "lucide-react";
+
+const ESSAYS: { col: string; title: string; icon: ComponentType<{ className?: string }>; wide?: boolean }[] = [
+  { col: "¿Cómo te describirías en 4 lineas?:", title: "Cómo se describe", icon: UserRound, wide: true },
+  { col: "¿Cuáles son tus metas profesionales?:", title: "Metas profesionales", icon: Target },
+  { col: "¿Qué te interesa trabajar durante el programa de mentorias? (ej. Metas de carrera, networking, analysis de habilidades, revisión de CV):", title: "Qué quiere trabajar en la mentoría", icon: Sparkles },
+  { col: "¿Cómo crees que tener una Mentora y formar parte de la red de Women in Finance ayudaría a impulsar tu carrera?:", title: "Cómo la ayudaría WIF", icon: Handshake },
+  { col: "¿Quién es tu modelo a seguir en el mundo profesional? ¿Por qué? :", title: "Modelo a seguir", icon: Star },
+  { col: "¿Cuáles consideras que son los 2 valores que te caracterizan? ¿Por qué?", title: "Sus 2 valores", icon: Gem },
+  { col: "Lista tus hobbies / intereses fuera del trabajo:", title: "Hobbies e intereses", icon: Heart },
+];
 import { toast } from "sonner";
 import { LinkedInSummary } from "@/components/LinkedInSummary";
 
@@ -110,7 +121,7 @@ export function ProfileLeft({ data }: { data: Record<string, string> }) {
           <Field label="Puesto de Trabajo" value={data["Puesto de Trabajo:"]} />
 
           <div className="md:col-span-2">
-            <Field label="Principales responsabilidades de tu puesto de trabajo" value={data["Principales responsabilidades de tu puesto de trabajo:"]} />
+            <Field label="Principales responsabilidades de tu puesto de trabajo" value={data["Principales responsabilidades de tu puesto de trabajo:"]} clamp />
           </div>
           <Field label="¿Tienes personas a tu cargo?" value={data["¿Tienes personas a tu cargo?"]} />
         </div>
@@ -119,32 +130,60 @@ export function ProfileLeft({ data }: { data: Record<string, string> }) {
       {/* PERFIL Y ENSAYOS */}
       <Card className="p-5">
         <p className="wif-section-title mb-3">Perfil y Ensayos</p>
-        <dl className="grid grid-cols-1 gap-4">
-          {[
-            "¿Cómo te describirías en 4 lineas?:",
-            "Lista tus hobbies / intereses fuera del trabajo:",
-            "¿Quién es tu modelo a seguir en el mundo profesional? ¿Por qué? :",
-            "¿Cuáles son tus metas profesionales?:",
-            "¿Qué te interesa trabajar durante el programa de mentorias? (ej. Metas de carrera, networking, analysis de habilidades, revisión de CV):",
-            "¿Cómo crees que tener una Mentora y formar parte de la red de Women in Finance ayudaría a impulsar tu carrera?:",
-            "¿Cuáles consideras que son los 2 valores que te caracterizan? ¿Por qué?",
-          ].map((f) => (
-            <div key={f}>
-              <dt className="text-xs text-muted-foreground">{f.replace(/:$/, "").trim()}</dt>
-              <dd className="mt-1 whitespace-pre-wrap text-sm">{data[f] || "—"}</dd>
-            </div>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {ESSAYS.map((e, i) => (
+            <Essay key={e.col} n={i + 1} icon={e.icon} title={e.title} question={e.col} value={data[e.col]} wide={e.wide} />
           ))}
-        </dl>
+        </div>
       </Card>
     </div>
   );
 }
 
-function Field({ label, value }: { label: string; value?: string }) {
+function Clamped({ text, lines = 4 }: { text?: string; lines?: number }) {
+  const [open, setOpen] = useState(false);
+  const value = (text ?? "").trim();
+  if (!value) return <p className="text-sm text-muted-foreground">Sin respuesta</p>;
+  const long = value.length > lines * 70;
   return (
     <div>
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="mt-1 whitespace-pre-wrap text-sm">{value || "—"}</div>
+      <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground" style={!open && long ? { display: "-webkit-box", WebkitLineClamp: lines, WebkitBoxOrient: "vertical", overflow: "hidden" } : undefined}>
+        {value}
+      </p>
+      {long && (
+        <button type="button" onClick={() => setOpen(!open)} className="mt-1.5 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+          {open ? "Ver menos" : "Ver más"}
+          <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+        </button>
+      )}
+    </div>
+  );
+}
+
+function Essay({ n, icon: Icon, title, question, value, wide }: { n: number; icon: ComponentType<{ className?: string }>; title: string; question: string; value?: string; wide?: boolean }) {
+  return (
+    <section className={`group rounded-xl border border-border border-l-4 border-l-primary bg-card p-4 transition-shadow hover:shadow-md ${wide ? "md:col-span-2" : ""}`}>
+      <header className="mb-2 flex items-start gap-2.5">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--teal-soft)] text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+          <Icon className="h-3.5 w-3.5" />
+        </span>
+        <div className="min-w-0">
+          <h3 className="text-sm font-semibold leading-tight text-foreground">
+            <span className="mr-1 text-primary">{String(n).padStart(2, "0")}</span>{title}
+          </h3>
+          <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground" title={question}>{question.replace(/:$/, "").trim()}</p>
+        </div>
+      </header>
+      <Clamped text={value} />
+    </section>
+  );
+}
+
+function Field({ label, value, clamp }: { label: string; value?: string; clamp?: boolean }) {
+  return (
+    <div>
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-primary">{label}</div>
+      <div className="mt-1">{clamp ? <Clamped text={value} lines={3} /> : <p className="whitespace-pre-wrap text-sm">{value || "—"}</p>}</div>
     </div>
   );
 }
