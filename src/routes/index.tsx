@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { listStaff } from "@/lib/sheets.functions";
 import { useSession } from "@/lib/session";
 import { requireSiteAccess } from "@/lib/gate.functions";
@@ -23,12 +22,8 @@ export const Route = createFileRoute("/")({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { session, isDirectora, setSession } = useSession();
+  const { setSession } = useSession();
   const staff = useQuery({ queryKey: ["staff"], queryFn: () => listStaff() });
-
-  useEffect(() => {
-    if (session) navigate({ to: isDirectora ? "/directora" : "/dashboard" });
-  }, [session, isDirectora, navigate]);
 
   const coordinadoras = (staff.data ?? []).filter(
     (s) => s.activo && s.nombreCompleto.trim().toLowerCase() !== DIRECTORA_NAME.toLowerCase(),
