@@ -115,7 +115,7 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function TopBar() {
-  const { session, setSession, isDirectora } = useSession();
+  const { session, setSession } = useSession();
   const router = useRouter();
   const { queryClient } = Route.useRouteContext();
   if (router.state.location.pathname === "/unlock") return null;
@@ -131,15 +131,6 @@ function TopBar() {
           </div>
         </Link>
         <nav className="flex items-center gap-2 text-sm">
-          {isDirectora && (
-            <Link
-              to="/directora"
-              activeProps={{ className: "text-primary" }}
-              className="rounded-md px-3 py-1.5 hover:bg-accent"
-            >
-              Vista Directora
-            </Link>
-          )}
           <span className="ml-2 hidden text-xs text-muted-foreground md:inline">{session.nombreCompleto}</span>
           <Button
             variant="outline"
