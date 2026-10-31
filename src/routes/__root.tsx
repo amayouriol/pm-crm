@@ -131,13 +131,6 @@ function TopBar() {
           </div>
         </Link>
         <nav className="flex items-center gap-2 text-sm">
-          <Link
-            to="/dashboard"
-            activeProps={{ className: "text-primary" }}
-            className="rounded-md px-3 py-1.5 hover:bg-accent"
-          >
-            Panel de Control
-          </Link>
           {isDirectora && (
             <Link
               to="/directora"
