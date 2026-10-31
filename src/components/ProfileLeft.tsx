@@ -13,7 +13,6 @@ const ESSAYS: { col: string; title: string; icon: ComponentType<{ className?: st
   { col: "Lista tus hobbies / intereses fuera del trabajo:", title: "Hobbies e intereses", icon: Heart },
 ];
 import { toast } from "sonner";
-import { LinkedInSummary } from "@/components/LinkedInSummary";
 
 function copy(text: string, label: string) {
   navigator.clipboard.writeText(text);
@@ -104,7 +103,6 @@ export function ProfileLeft({ data }: { data: Record<string, string> }) {
             <div className="mt-1.5 whitespace-pre-wrap text-sm">{refWif || "—"}</div>
           </div>
         </div>
-        <LinkedInSummary key={data["DNI"] || `${data["Nombres"]} ${data["Apellidos"]}`} />
       </Card>
 
       {/* TRAYECTORIA — pares en línea */}
