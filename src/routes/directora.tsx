@@ -55,7 +55,7 @@ function DirectoraView() {
   const [tab, setTab] = useState<Tab>("panel");
 
   useEffect(() => {
-    if (hydrated && !session) navigate({ to: "/" });
+    if (hydrated && !session) navigate({ to: "/inscripcion" });
     else if (hydrated && !isDirectora) navigate({ to: "/dashboard" });
   }, [session, isDirectora, hydrated, navigate]);
 

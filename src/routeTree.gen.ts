@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CronogramaRouteImport } from './routes/cronograma'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DirectoraRouteImport } from './routes/directora'
 import { Route as EdicionesAnterioresRouteImport } from './routes/ediciones-anteriores'
@@ -20,6 +21,11 @@ import { Route as PostulantesDniRouteImport } from './routes/postulantes.$dni'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CronogramaRoute = CronogramaRouteImport.update({
+  id: '/cronograma',
+  path: '/cronograma',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -55,6 +61,7 @@ const PostulantesDniRoute = PostulantesDniRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cronograma': typeof CronogramaRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
   '/ediciones-anteriores': typeof EdicionesAnterioresRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cronograma': typeof CronogramaRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
   '/ediciones-anteriores': typeof EdicionesAnterioresRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cronograma': typeof CronogramaRoute
   '/dashboard': typeof DashboardRoute
   '/directora': typeof DirectoraRoute
   '/ediciones-anteriores': typeof EdicionesAnterioresRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cronograma'
     | '/dashboard'
     | '/directora'
     | '/ediciones-anteriores'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cronograma'
     | '/dashboard'
     | '/directora'
     | '/ediciones-anteriores'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/cronograma'
     | '/dashboard'
     | '/directora'
     | '/ediciones-anteriores'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CronogramaRoute: typeof CronogramaRoute
   DashboardRoute: typeof DashboardRoute
   DirectoraRoute: typeof DirectoraRoute
   EdicionesAnterioresRoute: typeof EdicionesAnterioresRoute
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cronograma': {
+      id: '/cronograma'
+      path: '/cronograma'
+      fullPath: '/cronograma'
+      preLoaderRoute: typeof CronogramaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CronogramaRoute: CronogramaRoute,
   DashboardRoute: DashboardRoute,
   DirectoraRoute: DirectoraRoute,
   EdicionesAnterioresRoute: EdicionesAnterioresRoute,

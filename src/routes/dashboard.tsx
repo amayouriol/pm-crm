@@ -34,7 +34,7 @@ function Dashboard() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
-    if (hydrated && !session) navigate({ to: "/" });
+    if (hydrated && !session) navigate({ to: "/inscripcion" });
   }, [session, navigate]);
 
   const applicants = useQuery({
