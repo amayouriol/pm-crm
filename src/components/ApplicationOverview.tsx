@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { applicationOverview, type OverviewRow } from "@/lib/application-overview";
-import { regionForUniversity } from "@/lib/constants";
+import { regionForUniversity, statusOf, ESTADO } from "@/lib/constants";
 
 const COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)"];
 function weekLabel(value: string) {
@@ -21,6 +21,20 @@ export function ApplicationOverview({ rows }: { rows: OverviewRow[] }) {
   }, [rows]);
   const careers = useMemo(() => group(rows, "¿Qué estudiaste?").sort((a, b) => b.postulantes - a.postulantes).slice(0, 12), [rows]);
   const sectors = useMemo(() => group(rows, "Sector de Finanzas en el que trabajas:"), [rows]);
+  const byCoord = useMemo(() => {
+    const m = new Map<string, Record<string, number | string>>();
+    rows.forEach(({ data }) => {
+      const raw = (data["Encargada de la revisión:"] ?? "").trim();
+      const name = raw ? raw.split(/\s+/)[0] : "Sin asignar";
+      const label = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+      const e = statusOf(data).label;
+      const bucket = e === ESTADO.FASE1 ? "Fase 1" : e === ESTADO.FASE2 ? "Fase 2" : e === ESTADO.PENDIENTE_DIR || e === ESTADO.PENDIENTE_DUPLA ? "Pendiente directora" : "Completadas";
+      const r = m.get(label) ?? { name: label, total: 0 };
+      r[bucket] = ((r[bucket] as number) ?? 0) + 1; r.total = (r.total as number) + 1;
+      m.set(label, r);
+    });
+    return [...m.values()].sort((a, b) => (b.total as number) - (a.total as number));
+  }, [rows]);
 
   return <section aria-label="Resumen de postulaciones" className="space-y-8">
     <div>
@@ -69,6 +83,15 @@ export function ApplicationOverview({ rows }: { rows: OverviewRow[] }) {
           </Pie><Tooltip /><Legend wrapperStyle={{ fontSize: 11 }} />
         </PieChart></ResponsiveContainer>
       </ChartSection>
+      <div className="lg:col-span-2"><ChartSection title="Avance por coordinadora">
+        <p className="mb-3 text-xs text-muted-foreground">Postulantes asignadas a cada coordinadora según su estado actual</p>
+        <ResponsiveContainer width="100%" height={Math.max(220, byCoord.length * 44)}><BarChart data={byCoord} layout="vertical" accessibilityLayer>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+          <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} /><YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 12 }} interval={0} />
+          <Tooltip cursor={{ fill: "var(--teal-softer)" }} /><Legend wrapperStyle={{ fontSize: 11 }} />
+          {["Fase 1", "Fase 2", "Pendiente directora", "Completadas"].map((k, i, arr) => <Bar key={k} dataKey={k} stackId="c" fill={COLORS[i]} radius={i === arr.length - 1 ? [0, 4, 4, 0] : 0} animationDuration={900} />)}
+        </BarChart></ResponsiveContainer>
+      </ChartSection></div>
     </div>}
   </section>;
 }

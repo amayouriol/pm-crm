@@ -57,47 +57,42 @@ function LoginPage() {
             </p>
           )}
           {staff.data && (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <div className="flex flex-wrap gap-2.5 lg:flex-nowrap">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSession({ nombreCompleto: DIRECTORA_NAME, nombreCorto: "Nicole", correo: "" });
+                  navigate({ to: "/directora" });
+                }}
+                className="group h-auto flex-1 min-w-[150px] flex-row items-center justify-start gap-2.5 whitespace-normal rounded-xl p-2.5 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.05] hover:shadow-[0_8px_24px_-8px_var(--primary)] border-2 border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+              >
+                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary-foreground/20">
+                  <ClipboardList className="h-4 w-4" />
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-medium leading-tight">Nicole</div>
+                  <div className="text-[11px] opacity-80">Directora</div>
+                </div>
+              </Button>
               {coordinadoras.map((s) => (
                 <Button
                   variant="outline"
                   key={s.nombreCompleto}
                   onClick={() => {
-                    setSession({
-                      nombreCompleto: s.nombreCompleto,
-                      nombreCorto: s.nombreCorto,
-                      correo: s.correo,
-                    });
+                    setSession({ nombreCompleto: s.nombreCompleto, nombreCorto: s.nombreCorto, correo: s.correo });
                     navigate({ to: "/dashboard" });
                   }}
-                  className="group h-auto min-h-20 flex-col items-start justify-start whitespace-normal rounded-xl border border-border bg-card p-3 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.04] hover:border-primary hover:bg-teal-softer hover:shadow-[0_8px_24px_-8px_var(--primary)]"
+                  className="group h-auto flex-1 min-w-[150px] flex-row items-center justify-start gap-2.5 whitespace-normal rounded-xl p-2.5 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.05] hover:shadow-[0_8px_24px_-8px_var(--primary)] border border-border bg-card hover:border-primary hover:bg-teal-softer"
                 >
-                  <div className="mb-1.5 grid h-8 w-8 place-items-center rounded-full bg-teal-soft text-xs text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                    {s.nombreCorto.slice(0, 2).toUpperCase()}
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-teal-soft text-xs text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                    {(s.nombreCorto || s.nombreCompleto).slice(0, 2).toUpperCase()}
                   </div>
-                  <div className="text-sm leading-tight">{s.nombreCorto || s.nombreCompleto}</div>
-                  <div className="text-[11px] text-muted-foreground">coordinadora</div>
+                  <div className="min-w-0">
+                    <div className="truncate text-sm leading-tight">{s.nombreCorto || s.nombreCompleto}</div>
+                    <div className="text-[11px] text-muted-foreground">Coordinadora</div>
+                  </div>
                 </Button>
               ))}
-
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setSession({
-                    nombreCompleto: DIRECTORA_NAME,
-                    nombreCorto: "Nicole",
-                    correo: "",
-                  });
-                  navigate({ to: "/directora" });
-                }}
-                className="group h-auto min-h-20 flex-col items-start justify-start whitespace-normal rounded-xl border-2 border-primary bg-teal-softer p-3 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:scale-[1.04] hover:bg-teal-soft hover:shadow-[0_8px_24px_-8px_var(--primary)]"
-              >
-                <div className="mb-1.5 grid h-8 w-8 place-items-center rounded-full bg-primary text-primary-foreground">
-                  <ClipboardList className="h-4 w-4" />
-                </div>
-                <div className="text-sm font-medium leading-tight">Vista Directora</div>
-                <div className="text-[11px] text-muted-foreground">Coordinación y resultados</div>
-              </Button>
             </div>
           )}
         </section>
