@@ -110,7 +110,7 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
 
 type Filter = "todas" | "fase1" | "fase2" | "pendienteDir" | "hechas";
 
-function PanelDeControlTab({ rows }: { rows: Array<{ data: Record<string, string> }> }) {
+function PanelDeControlTab({ rows }: { rows: Array<{ data: Record<string, string>; previousYears?: string[] }> }) {
   const [filter, setFilter] = useState<Filter>("todas");
   const [q, setQ] = useState("");
   const [openDni, setOpenDni] = useState<string | null>(null);
