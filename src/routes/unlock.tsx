@@ -5,6 +5,7 @@ import { LockKeyhole } from "lucide-react";
 import { unlockSite } from "@/lib/gate.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSession } from "@/lib/session";
 
 export const Route = createFileRoute("/unlock")({
   head: () => ({ meta: [
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/unlock")({
 function UnlockPage() {
   const router = useRouter();
   const unlock = useServerFn(unlockSite);
+  const { setSession } = useSession();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
 
@@ -33,7 +35,10 @@ function UnlockPage() {
     try {
       const result = await unlock({ data: { password } });
       if (!result.ok) setError("Contraseña incorrecta.");
-      else await router.navigate({ to: "/", replace: true });
+      else {
+        setSession(null);
+        await router.navigate({ to: "/", replace: true });
+      }
     } catch {
       setError("No se pudo ingresar. Inténtalo nuevamente.");
     } finally { setPending(false); }
@@ -46,7 +51,7 @@ function UnlockPage() {
         <h1 className="text-3xl font-light">Women in Finance</h1>
         <p className="mt-2 text-sm text-muted-foreground">Portal interno · Programa de Mentoría</p>
       </div>
-      <form onSubmit={submit} className="space-y-5">
+      <form method="post" onSubmit={submit} className="space-y-5">
         <h2 className="flex items-center gap-2 text-lg"><LockKeyhole className="h-5 w-5 text-primary" />Acceso privado</h2>
         <div className="space-y-2">
           <label htmlFor="team-password" className="text-sm">Contraseña del equipo</label>

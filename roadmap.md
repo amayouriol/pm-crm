@@ -4,3 +4,4 @@
 - [x] Store shared access and session secrets securely.
 - [x] Add password entry before the staff selector and protect all CRM reads, writes, and AI calls.
 - [x] Verify locked access, password entry, refresh, and sign-out end to end.
+- [x] Verify password entry with a previously saved Andrea profile stays on the selector until explicit selection.
