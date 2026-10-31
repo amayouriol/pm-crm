@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createOpenAI } from "@ai-sdk/openai";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateText } from "ai";
 import { requireTeamGate } from "./gate.middleware";
 
@@ -11,12 +11,16 @@ export const summarizeApplicant = createServerFn({ method: "POST" })
     return { profile: obj.profile.slice(0, 12000) };
   })
   .handler(async ({ data }) => {
-    const key = process.env.OPENAI_API_KEY;
-    if (!key) throw new Error("OPENAI_API_KEY no está configurada en los secretos del servidor");
+    const key = process.env.GEMINI_API_KEY;
+    if (!key) throw new Error("GEMINI_API_KEY no está configurada en los secretos del servidor");
 
-    const openai = createOpenAI({ apiKey: key });
+    const gemini = createOpenAICompatible({
+      name: "gemini",
+      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/",
+      apiKey: key,
+    });
     const result = await generateText({
-      model: openai("gpt-6-luna"),
+      model: gemini("gemini-3.6-flash"),
       maxOutputTokens: 500,
       messages: [
         {
@@ -28,6 +32,6 @@ export const summarizeApplicant = createServerFn({ method: "POST" })
       ],
     });
 
-    if (!result.text.trim()) throw new Error("OpenAI no devolvió un resumen para esta solicitud");
+    if (!result.text.trim()) throw new Error("Gemini no devolvió un resumen para esta solicitud");
     return { summary: result.text.trim() };
   });
