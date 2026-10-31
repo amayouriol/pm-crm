@@ -3,26 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {
   listApplicants,
   listMentoras,
   listStaff,
   updateApplicantByDni,
 } from "@/lib/sheets.functions";
 import { summarizeApplicant } from "@/lib/ai.functions";
-import { ESTADO, regionForUniversity, SCORECARD_COLS, statusOf, type EstadoLabel } from "@/lib/constants";
+import { ESTADO, SCORECARD_COLS, statusOf, type EstadoLabel } from "@/lib/constants";
 import { useSession } from "@/lib/session";
 import { requireSiteAccess } from "@/lib/gate.functions";
 import { Card } from "@/components/ui/card";
@@ -51,23 +38,20 @@ export const Route = createFileRoute("/directora")({
   beforeLoad: () => requireSiteAccess(),
   head: () => ({ meta: [
     { title: "Panel Ejecutivo | WIF Mentoría" },
-    { name: "description", content: "Analíticas y resultados de selección de Women in Finance." },
+    { name: "description", content: "Coordinación, evaluación y resultados de selección de Women in Finance." },
     { property: "og:title", content: "Panel Ejecutivo | WIF Mentoría" },
-    { property: "og:description", content: "Analíticas y resultados de selección de Women in Finance." },
+    { property: "og:description", content: "Coordinación, evaluación y resultados de selección de Women in Finance." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: DirectoraView,
 });
 
-const TEAL = "#1C999C";
-const TEAL_TINTS = ["#1C999C", "#5FBABC", "#9CD7D8", "#C8E9EA", "#3AA9AC", "#7CC7C9"];
-
-type Tab = "dashboard" | "panel" | "resultados";
+type Tab = "panel" | "resultados";
 
 function DirectoraView() {
   const { session, isDirectora, hydrated } = useSession();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("dashboard");
+  const [tab, setTab] = useState<Tab>("panel");
 
   useEffect(() => {
     if (hydrated && !session) navigate({ to: "/" });
@@ -91,12 +75,10 @@ function DirectoraView() {
       </div>
 
       <div className="mb-6 flex gap-1 border-b border-border">
-        <TabBtn active={tab === "dashboard"} onClick={() => setTab("dashboard")}>Dashboard</TabBtn>
         <TabBtn active={tab === "panel"} onClick={() => setTab("panel")}>Panel de Control</TabBtn>
         <TabBtn active={tab === "resultados"} onClick={() => setTab("resultados")}>Panel de resultados</TabBtn>
       </div>
 
-      {tab === "dashboard" && <DashboardTab rows={rows} />}
       {tab === "panel" && <PanelDeControlTab rows={rows} />}
       {tab === "resultados" && (
         <ResultadosTab rows={rows} staffList={staffList} mentoras={mentoras.data ?? []} />
