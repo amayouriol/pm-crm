@@ -3,26 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {
   listApplicants,
   listMentoras,
   listStaff,
   updateApplicantByDni,
 } from "@/lib/sheets.functions";
 import { summarizeApplicant } from "@/lib/ai.functions";
-import { ESTADO, regionForUniversity, SCORECARD_COLS, statusOf, type EstadoLabel } from "@/lib/constants";
+import { ESTADO, SCORECARD_COLS, statusOf, type EstadoLabel } from "@/lib/constants";
 import { useSession } from "@/lib/session";
 import { requireSiteAccess } from "@/lib/gate.functions";
 import { Card } from "@/components/ui/card";
@@ -51,23 +38,20 @@ export const Route = createFileRoute("/directora")({
   beforeLoad: () => requireSiteAccess(),
   head: () => ({ meta: [
     { title: "Panel Ejecutivo | WIF Mentoría" },
-    { name: "description", content: "Analíticas y resultados de selección de Women in Finance." },
+    { name: "description", content: "Coordinación, evaluación y resultados de selección de Women in Finance." },
     { property: "og:title", content: "Panel Ejecutivo | WIF Mentoría" },
-    { property: "og:description", content: "Analíticas y resultados de selección de Women in Finance." },
+    { property: "og:description", content: "Coordinación, evaluación y resultados de selección de Women in Finance." },
     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
   ] }),
   component: DirectoraView,
 });
 
-const TEAL = "#1C999C";
-const TEAL_TINTS = ["#1C999C", "#5FBABC", "#9CD7D8", "#C8E9EA", "#3AA9AC", "#7CC7C9"];
-
-type Tab = "dashboard" | "panel" | "resultados";
+type Tab = "panel" | "resultados";
 
 function DirectoraView() {
   const { session, isDirectora, hydrated } = useSession();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("dashboard");
+  const [tab, setTab] = useState<Tab>("panel");
 
   useEffect(() => {
     if (hydrated && !session) navigate({ to: "/" });
@@ -91,12 +75,10 @@ function DirectoraView() {
       </div>
 
       <div className="mb-6 flex gap-1 border-b border-border">
-        <TabBtn active={tab === "dashboard"} onClick={() => setTab("dashboard")}>Dashboard</TabBtn>
         <TabBtn active={tab === "panel"} onClick={() => setTab("panel")}>Panel de Control</TabBtn>
         <TabBtn active={tab === "resultados"} onClick={() => setTab("resultados")}>Panel de resultados</TabBtn>
       </div>
 
-      {tab === "dashboard" && <DashboardTab rows={rows} />}
       {tab === "panel" && <PanelDeControlTab rows={rows} />}
       {tab === "resultados" && (
         <ResultadosTab rows={rows} staffList={staffList} mentoras={mentoras.data ?? []} />
@@ -117,113 +99,6 @@ function TabBtn({ active, onClick, children }: { active: boolean; onClick: () =>
     >
       {children}
     </button>
-  );
-}
-
-// ================ TAB 1: Dashboard (solo gráficos) ================
-
-function DashboardTab({ rows }: { rows: Array<{ data: Record<string, string> }> }) {
-  const weekly = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const r of rows) {
-      const d = parseDate(r.data["Marca temporal"]);
-      if (!d) continue;
-      const wk = weekKey(d);
-      map.set(wk, (map.get(wk) ?? 0) + 1);
-    }
-    return Array.from(map.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([semana, postulantes]) => ({ semana, postulantes }));
-  }, [rows]);
-
-  const regionData = useMemo(() => {
-    const map = { Lima: 0, Provincias: 0, "No especificado": 0 } as Record<string, number>;
-    for (const r of rows) map[regionForUniversity(r.data["¿Dónde estudiaste?"])] += 1;
-    return Object.entries(map).map(([region, postulantes]) => ({ region, postulantes }));
-  }, [rows]);
-
-  const carreraData = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const r of rows) {
-      const k = (r.data["¿Qué estudiaste?"] || "No especificado").trim();
-      map.set(k, (map.get(k) ?? 0) + 1);
-    }
-    return Array.from(map.entries())
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 12)
-      .map(([carrera, postulantes]) => ({ carrera, postulantes }));
-  }, [rows]);
-
-  const sectorData = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const r of rows) {
-      const k = (r.data["Sector de Finanzas en el que trabajas:"] || "No especificado").trim();
-      map.set(k, (map.get(k) ?? 0) + 1);
-    }
-    return Array.from(map.entries()).map(([sector, n]) => ({ sector, n }));
-  }, [rows]);
-
-  return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <ChartCard title={`Avance de registro (${rows.length} totales)`}>
-        <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={weekly}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-            <XAxis dataKey="semana" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-            <Tooltip />
-            <Bar dataKey="postulantes" fill={TEAL} radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </ChartCard>
-
-      <ChartCard title="Postulantes por región universitaria">
-        <ResponsiveContainer width="100%" height={240}>
-          <BarChart data={regionData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-            <XAxis dataKey="region" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-            <Tooltip />
-            <Bar dataKey="postulantes" fill={TEAL} radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </ChartCard>
-
-      <ChartCard title="Postulantes por carrera (top 12)">
-        <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={carreraData} layout="vertical" margin={{ left: 60 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-            <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
-            <YAxis type="category" dataKey="carrera" tick={{ fontSize: 11 }} width={140} />
-            <Tooltip />
-            <Bar dataKey="postulantes" fill={TEAL} radius={[0, 4, 4, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </ChartCard>
-
-      <ChartCard title="Postulantes por sector de finanzas">
-        <ResponsiveContainer width="100%" height={280}>
-          <PieChart>
-            <Pie data={sectorData} dataKey="n" nameKey="sector" cx="50%" cy="50%" innerRadius={50} outerRadius={100}>
-              {sectorData.map((_, i) => (
-                <Cell key={i} fill={TEAL_TINTS[i % TEAL_TINTS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend wrapperStyle={{ fontSize: 11 }} />
-          </PieChart>
-        </ResponsiveContainer>
-      </ChartCard>
-    </div>
-  );
-}
-
-function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <Card className="p-5">
-      <p className="wif-section-title mb-3">{title}</p>
-      {children}
-    </Card>
   );
 }
 
@@ -855,19 +730,3 @@ function ProfileModal({
   );
 }
 
-// ---------- Utils ----------
-
-function parseDate(s: string | undefined): Date | null {
-  if (!s) return null;
-  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
-  const d = new Date(s);
-  return isNaN(d.getTime()) ? null : d;
-}
-
-function weekKey(d: Date): string {
-  const dt = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const day = dt.getUTCDay() || 7;
-  dt.setUTCDate(dt.getUTCDate() - day + 1);
-  return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, "0")}-${String(dt.getUTCDate()).padStart(2, "0")}`;
-}

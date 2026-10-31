@@ -6,3 +6,5 @@
 - [x] Verify locked access, password entry, refresh, and sign-out end to end.
 - [x] Verify password entry with a previously saved Andrea profile stays on the selector until explicit selection.
 - [x] Verify “Salir de vista” returns both coordinator and director views to profile selection without relocking team access.
+- [x] Move all director charts to the unlocked main view with applicant totals and weekly applications.
+- [x] Keep profile selection and operational staff views; verify privacy, charts, and navigation.
