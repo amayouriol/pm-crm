@@ -9,4 +9,4 @@
 - [x] Move all director charts to the unlocked main view with applicant totals and weekly applications.
 - [x] Keep profile selection and operational staff views; verify privacy, charts, and navigation.
 - [x] Fix encrypted session persistence in embedded previews and verify password entry, refresh, and locked access.
-- [ ] Remove the "Vista Directora" button from the top bar and give the director view a "Panel ejecutivo / Bienvenida, Nicole" header like the coordinator view.
+- [x] Remove the "Vista Directora" button from the top bar and give the director view a "Panel ejecutivo / Bienvenida, Nicole" header like the coordinator view.
