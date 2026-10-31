@@ -14,6 +14,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SessionProvider, useSession } from "../lib/session";
 import { Toaster } from "sonner";
+import { lockSite } from "@/lib/gate.functions";
+import { Button } from "@/components/ui/button";
 
 function NotFoundComponent() {
   return (
@@ -84,8 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "CRM Interno" },
       { name: "twitter:description", content: "Internal CRM portal for Women In Finance (WIF) to manage their Mentorship Program." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/eb719ebd-75c1-4a68-a138-d83e6727a286/id-preview-a55ae074--dfcdb57f-5fd8-499a-bbc7-2c7a66547943.lovable.app-1783578882420.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/eb719ebd-75c1-4a68-a138-d83e6727a286/id-preview-a55ae074--dfcdb57f-5fd8-499a-bbc7-2c7a66547943.lovable.app-1783578882420.png" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -114,6 +115,9 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function TopBar() {
   const { session, setSession, isDirectora } = useSession();
+  const router = useRouter();
+  const { queryClient } = Route.useRouteContext();
+  if (router.state.location.pathname === "/unlock") return null;
   if (!session) return null;
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
@@ -145,12 +149,20 @@ function TopBar() {
             </Link>
           )}
           <span className="ml-2 hidden text-xs text-muted-foreground md:inline">{session.nombreCompleto}</span>
-          <button
-            onClick={() => setSession(null)}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              await queryClient.cancelQueries();
+              await lockSite();
+              queryClient.clear();
+              setSession(null);
+              await router.navigate({ to: "/unlock", replace: true });
+            }}
             className="ml-2 rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
           >
             Salir
-          </button>
+          </Button>
         </nav>
       </div>
     </header>

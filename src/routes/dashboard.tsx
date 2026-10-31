@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { listApplicants } from "@/lib/sheets.functions";
 import { useSession } from "@/lib/session";
+import { requireSiteAccess } from "@/lib/gate.functions";
 import { ESTADO, statusOf, type EstadoLabel } from "@/lib/constants";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/dashboard")({
+  beforeLoad: () => requireSiteAccess(),
   head: () => ({ meta: [
     { title: "Panel de Control | WIF Mentoría" },
     { name: "description", content: "Seguimiento de postulantes y revisiones del programa Women in Finance." },

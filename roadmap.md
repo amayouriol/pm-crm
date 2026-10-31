@@ -1,3 +1,6 @@
 - [x] Add pasted LinkedIn summary to the shared applicant profile.
 - [x] Integrate Lovable AI Gateway without changing the existing summary.
 - [x] Verify input validation and a real coordinator summary flow.
+- [x] Store shared access and session secrets securely.
+- [x] Add password entry before the staff selector and protect all CRM reads, writes, and AI calls.
+- [ ] Verify locked access, password entry, refresh, and sign-out end to end.

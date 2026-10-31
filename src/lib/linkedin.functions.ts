@@ -1,8 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { validateLinkedInInput } from "./linkedin-input";
+import { requireTeamGate } from "./gate.middleware";
 
 export const summarizeLinkedIn = createServerFn({ method: "POST" })
+  .middleware([requireTeamGate])
   .inputValidator(validateLinkedInInput)
   .handler(async ({ data }) => {
     const key = process.env.LOVABLE_API_KEY;

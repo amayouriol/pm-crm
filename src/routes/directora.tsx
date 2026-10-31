@@ -24,6 +24,7 @@ import {
 import { summarizeApplicant } from "@/lib/ai.functions";
 import { ESTADO, regionForUniversity, SCORECARD_COLS, statusOf, type EstadoLabel } from "@/lib/constants";
 import { useSession } from "@/lib/session";
+import { requireSiteAccess } from "@/lib/gate.functions";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -47,6 +48,7 @@ import { EvaluationPanel } from "@/components/EvaluationPanel";
 import { Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/directora")({
+  beforeLoad: () => requireSiteAccess(),
   head: () => ({ meta: [
     { title: "Panel Ejecutivo | WIF Mentoría" },
     { name: "description", content: "Analíticas y resultados de selección de Women in Finance." },

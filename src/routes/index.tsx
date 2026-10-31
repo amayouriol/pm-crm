@@ -3,12 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { listStaff } from "@/lib/sheets.functions";
 import { useSession } from "@/lib/session";
+import { requireSiteAccess } from "@/lib/gate.functions";
 
 import { DIRECTORA_NAME } from "@/lib/constants";
 import { Card } from "@/components/ui/card";
 import { BarChart3 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => requireSiteAccess(),
   head: () => ({ meta: [
     { title: "Ingreso | WIF Mentoría" },
     { name: "description", content: "Acceso del equipo al portal de mentoría Women in Finance." },

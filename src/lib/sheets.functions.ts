@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireTeamGate } from "./gate.middleware";
 import {
   COLS,
   SCORECARD_COLS,
@@ -38,7 +39,7 @@ function rowToRecord(row: string[]): Record<string, string> {
 }
 
 // ---------- Read: all applicants ----------
-export const listApplicants = createServerFn({ method: "GET" }).handler(async () => {
+export const listApplicants = createServerFn({ method: "GET" }).middleware([requireTeamGate]).handler(async () => {
   const { getValues } = await import("./sheets.server");
   const values = await getValues(`${SHEET_APPLICANTS}!A2:AY`);
   const rows: ApplicantRow[] = values.map((row, i) => ({
@@ -50,6 +51,7 @@ export const listApplicants = createServerFn({ method: "GET" }).handler(async ()
 
 // ---------- Read: single applicant by DNI ----------
 export const getApplicantByDni = createServerFn({ method: "GET" })
+  .middleware([requireTeamGate])
   .inputValidator((d: unknown) => {
     const dni = typeof d === "string" ? d : (d as { dni?: string })?.dni;
     if (!dni || typeof dni !== "string") throw new Error("DNI requerido");
@@ -69,6 +71,7 @@ export const getApplicantByDni = createServerFn({ method: "GET" })
 
 // ---------- Write: update fields by DNI ----------
 export const updateApplicantByDni = createServerFn({ method: "POST" })
+  .middleware([requireTeamGate])
   .inputValidator((d: unknown) => {
     const obj = d as { dni?: string; updates?: Record<string, string | number> };
     if (!obj?.dni) throw new Error("DNI requerido");
@@ -109,7 +112,7 @@ export const updateApplicantByDni = createServerFn({ method: "POST" })
   });
 
 // ---------- Read: mentoras ----------
-export const listMentoras = createServerFn({ method: "GET" }).handler(async () => {
+export const listMentoras = createServerFn({ method: "GET" }).middleware([requireTeamGate]).handler(async () => {
   const { getValues } = await import("./sheets.server");
   const values = await getValues(`${SHEET_MENTORAS}!A2:D`);
   return values
@@ -118,7 +121,7 @@ export const listMentoras = createServerFn({ method: "GET" }).handler(async () =
 });
 
 // ---------- Read: staff (coordinadoras) ----------
-export const listStaff = createServerFn({ method: "GET" }).handler(async () => {
+export const listStaff = createServerFn({ method: "GET" }).middleware([requireTeamGate]).handler(async () => {
   const { getValues } = await import("./sheets.server");
   const values = await getValues(`${SHEET_STAFF}!A2:G`);
   return values
