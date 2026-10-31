@@ -9,7 +9,6 @@ import {
   listStaff,
   updateApplicantByDni,
 } from "@/lib/sheets.functions";
-import { summarizeApplicant } from "@/lib/ai.functions";
 import { ESTADO, SCORECARD_COLS, statusOf, type EstadoLabel } from "@/lib/constants";
 import { useSession } from "@/lib/session";
 import { requireSiteAccess } from "@/lib/gate.functions";
@@ -33,7 +32,6 @@ import {
 } from "@/components/ui/dialog";
 import { ProfileLeft } from "@/components/ProfileLeft";
 import { EvaluationPanel } from "@/components/EvaluationPanel";
-import { Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/directora")({
   beforeLoad: () => requireSiteAccess(),
@@ -623,7 +621,6 @@ function ProfileModal({
       import("@/lib/sheets.functions").then((m) => m.getApplicantByDni({ data: { dni } })),
   });
   const [draft, setDraft] = useState<Record<string, string | number>>({});
-  const [summary, setSummary] = useState<string>("");
 
   const merged = useMemo(() => {
     if (!applicant.data) return {} as Record<string, string>;
@@ -649,30 +646,6 @@ function ProfileModal({
     onError: (e: Error) => toast.error(`Error: ${e.message}`),
   });
 
-  const summarize = useMutation({
-    mutationFn: async () => {
-      const d = applicant.data?.data;
-      if (!d) throw new Error("Sin datos");
-      const profile = [
-        `Nombre: ${d["Nombres"]} ${d["Apellidos"]}`,
-        `Universidad: ${d["¿Dónde estudiaste?"]}  ·  Carrera: ${d["¿Qué estudiaste?"]}`,
-        `Sector: ${d["Sector de Finanzas en el que trabajas:"]}  ·  Puesto: ${d["Puesto de Trabajo:"]} en ${d["Lugar de Trabajo Actual:"]}`,
-        `Experiencia: ${d["Años de experiencia profesional en la industria financiera:"]} años`,
-        `Descripción: ${d["¿Cómo te describirías en 4 lineas?:"]}`,
-        `Metas: ${d["¿Cuáles son tus metas profesionales?:"]}`,
-        `Interés en el programa: ${d["¿Qué te interesa trabajar durante el programa de mentorias? (ej. Metas de carrera, networking, analysis de habilidades, revisión de CV):"]}`,
-        `Impacto esperado de la mentoría: ${d["¿Cómo crees que tener una Mentora y formar parte de la red de Women in Finance ayudaría a impulsar tu carrera?:"]}`,
-        `Modelo a seguir: ${d["¿Quién es tu modelo a seguir en el mundo profesional? ¿Por qué? :"]}`,
-        `Valores: ${d["¿Cuáles consideras que son los 2 valores que te caracterizan? ¿Por qué?"]}`,
-        `LinkedIn: ${d["LinkedIn"]}`,
-      ].join("\n");
-      const r = await summarizeApplicant({ data: { profile } });
-      return r.summary;
-    },
-    onSuccess: (text) => setSummary(text),
-    onError: (e: Error) => toast.error(`IA: ${e.message}`),
-  });
-
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[92vh] max-w-[1400px] overflow-hidden p-0">
@@ -689,28 +662,6 @@ function ProfileModal({
           {applicant.data && (
             <div className="grid grid-cols-1 gap-5 p-5 lg:grid-cols-[1.15fr_1fr]">
               <div className="space-y-4">
-                <Card className="border-primary/30 bg-[var(--teal-softer)] p-5">
-                  <div className="mb-3 flex items-center justify-between">
-                    <p className="wif-section-title flex items-center gap-2">
-                      <Sparkles className="h-3.5 w-3.5" /> Resumen Ejecutivo de Perfil por IA
-                    </p>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => summarize.mutate()}
-                      disabled={summarize.isPending}
-                    >
-                      {summarize.isPending ? "Generando…" : summary ? "Regenerar" : "Generar resumen"}
-                    </Button>
-                  </div>
-                  {summary ? (
-                    <pre className="whitespace-pre-wrap font-sans text-sm">{summary}</pre>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">
-                      Genera un resumen del CV, respuestas y perfil profesional con IA (bajo demanda).
-                    </p>
-                  )}
-                </Card>
                 <ProfileLeft data={applicant.data.data} />
               </div>
               <div className="lg:sticky lg:top-0 lg:self-start">

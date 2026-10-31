@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState, type ComponentType } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { summarizeApplicant } from "@/lib/ai.functions";
 import { ChevronDown, Copy, ExternalLink, FileText, Gem, Handshake, Heart, Linkedin, Mail, Phone, Sparkles, Star, Target, UserRound } from "lucide-react";
 
 const ESSAYS: { col: string; title: string; icon: ComponentType<{ className?: string }>; wide?: boolean }[] = [
@@ -19,6 +21,62 @@ function copy(text: string, label: string) {
   toast.success(`${label} copiado`);
 }
 
+function ExecutiveSummary({ data }: { data: Record<string, string> }) {
+  const fields: Array<[string, string | undefined]> = [
+    ["Universidad", data["¿Dónde estudiaste?"]],
+    ["Carrera", data["¿Qué estudiaste?"]],
+    ["Sector financiero", data["Sector de Finanzas en el que trabajas:"]],
+    ["Puesto", data["Puesto de Trabajo:"]],
+    ["Lugar de trabajo", data["Lugar de Trabajo Actual:"]],
+    ["Años de experiencia", data["Años de experiencia profesional en la industria financiera:"]],
+    ["Descripción profesional", data["¿Cómo te describirías en 4 lineas?:"]],
+    ["Metas profesionales", data["¿Cuáles son tus metas profesionales?:"]],
+    ["Interés en el programa", data["¿Qué te interesa trabajar durante el programa de mentorias? (ej. Metas de carrera, networking, analysis de habilidades, revisión de CV):"]],
+    ["Impacto esperado de la mentoría", data["¿Cómo crees que tener una Mentora y formar parte de la red de Women in Finance ayudaría a impulsar tu carrera?:"]],
+    ["Modelo a seguir", data["¿Quién es tu modelo a seguir en el mundo profesional? ¿Por qué? :"]],
+    ["Valores", data["¿Cuáles consideras que son los 2 valores que te caracterizan? ¿Por qué?"]],
+    ["Hobbies e intereses", data["Lista tus hobbies / intereses fuera del trabajo:"]],
+  ];
+  const profile = fields
+    .filter(([, value]) => Boolean(value?.trim()))
+    .map(([label, value]) => `${label}: ${value?.trim()}`)
+    .join("\n");
+
+  const summary = useMutation({
+    mutationFn: async () => {
+      if (!profile) throw new Error("Este perfil no tiene respuestas para resumir.");
+      const result = await summarizeApplicant({ data: { profile } });
+      return result.summary;
+    },
+    onError: (error: Error) => toast.error(`IA: ${error.message}`),
+  });
+
+  return (
+    <Card className="border-primary/30 bg-[var(--teal-softer)] p-5">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="wif-section-title flex items-center gap-2">
+          <Sparkles className="h-3.5 w-3.5" /> Resumen Ejecutivo de Perfil por IA
+        </p>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => summary.mutate()}
+          disabled={summary.isPending || !profile}
+        >
+          {summary.isPending ? "Generando…" : summary.data ? "Regenerar" : "Generar resumen"}
+        </Button>
+      </div>
+      {summary.data ? (
+        <pre className="whitespace-pre-wrap font-sans text-sm">{summary.data}</pre>
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          Genera un resumen de las respuestas y del perfil profesional. El PDF del CV aún no se procesa.
+        </p>
+      )}
+    </Card>
+  );
+}
+
 export function ProfileLeft({ data }: { data: Record<string, string> }) {
   const email = data["Dirección de correo electrónico"];
   const cel = data["Número de celular"];
@@ -29,6 +87,8 @@ export function ProfileLeft({ data }: { data: Record<string, string> }) {
 
   return (
     <div className="space-y-4">
+      <ExecutiveSummary key={data["DNI"] || data["Nombres"] || "applicant"} data={data} />
+
       {/* CONTACTO */}
       <Card className="p-5">
         <p className="wif-section-title mb-4">Contacto</p>
