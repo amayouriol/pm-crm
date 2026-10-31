@@ -1,3 +1,4 @@
+import { PreviousBadges } from "@/components/PreviousBadges";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -197,6 +198,7 @@ function PanelDeControlTab({ rows }: { rows: Array<{ data: Record<string, string
                     {a.data["¿Candidata destacada?"]?.toLowerCase().includes("true") && (
                       <Badge className="ml-2 bg-[var(--teal-soft)] text-primary" variant="outline">Destacada</Badge>
                     )}
+                    <PreviousBadges years={a.previousYears} />
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{a.data["DNI"]}</td>
                   <td className="px-4 py-3">{a.data["Encargada de la revisión:"] || "—"}</td>

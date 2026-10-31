@@ -1,3 +1,4 @@
+import { PreviousBadges } from "@/components/PreviousBadges";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -85,6 +86,7 @@ function ProfilePage() {
           <div className="mt-2">
             <h1 className="text-3xl font-light tracking-tight">
               {applicant.data.data["Nombres"]} {applicant.data.data["Apellidos"]}
+              <PreviousBadges years={applicant.data.previousYears} />
             </h1>
             <div className="mt-1 text-sm text-muted-foreground">
               DNI: <span className="font-mono">{applicant.data.data["DNI"] || dni}</span>

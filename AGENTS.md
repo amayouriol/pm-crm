@@ -18,3 +18,4 @@
 - Coordinate profile-exit cache cancellation, cache clearing, profile reset, and selector navigation in the browser-safe exitView helper so leaving a view remains separate from revoking the encrypted team gate.
 - Keep team-wide application analytics in a browser-safe shared overview on the password-protected index; derive weekly cohorts from existing Sheets timestamps and decisions without adding columns, leaving staff routes operational.
 - Assign unassigned applicants automatically in listApplicants via the pure auto-assign planner (balanced counts, random ties, referenced coordinators excluded); never reassign existing reviewers.
+- Previous-application flags are derived at read time from the Historial sheet by DNI via the browser-safe history helper; never written back to Sheets.

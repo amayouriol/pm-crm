@@ -1,3 +1,4 @@
+import { PreviousBadges } from "@/components/PreviousBadges";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
@@ -169,6 +170,7 @@ function Dashboard() {
                         Destacada
                       </Badge>
                     )}
+                    <PreviousBadges years={a.previousYears} />
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{a.data["DNI"]}</td>
                   <td className="px-4 py-3">{a.data["¿Dónde estudiaste?"] || "—"}</td>

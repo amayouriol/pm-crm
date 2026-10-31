@@ -10,3 +10,4 @@
 - [x] Keep profile selection and operational staff views; verify privacy, charts, and navigation.
 - [x] Fix encrypted session persistence in embedded previews and verify password entry, refresh, and locked access.
 - [x] Remove the "Vista Directora" button from the top bar and give the director view a "Panel ejecutivo / Bienvenida, Nicole" header like the coordinator view.- [x] Automatic balanced random reviewer assignment excluding referenced coordinators.
+- [x] Flag applicants who applied before (Historial_2024_2026 by DNI) as Postulante YYYY.
