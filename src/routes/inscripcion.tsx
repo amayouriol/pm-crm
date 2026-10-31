@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listApplicants, listStaff } from "@/lib/sheets.functions";
 import { useSession } from "@/lib/session";
@@ -7,7 +7,7 @@ import { requireSiteAccess } from "@/lib/gate.functions";
 import { DIRECTORA_NAME } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { ApplicationOverview } from "@/components/ApplicationOverview";
-import { ClipboardList, MousePointerClick } from "lucide-react";
+import { ArrowLeft, ClipboardList, MousePointerClick } from "lucide-react";
 import wifLogo from "@/assets/wif-logo.png.asset.json";
 
 export const Route = createFileRoute("/inscripcion")({
@@ -35,13 +35,21 @@ function LoginPage() {
   return (
     <main className="min-h-screen bg-background px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-7xl">
-        <header className="mb-8 flex items-center gap-4 border-b border-border pb-6">
-          <img src={wifLogo.url} alt="Women in Finance" className="h-14 w-auto shrink-0 rounded-lg" />
-          <div><h1 className="text-3xl font-light">Programa de mentoras</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Inscripción al programa de mentoras 2027
-          </p>
+        <header className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+          <div className="flex items-center gap-4">
+            <img src={wifLogo.url} alt="Women in Finance" className="h-14 w-auto shrink-0 rounded-lg" />
+            <div><h1 className="text-3xl font-light">Programa de mentoras</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Inscripción al programa de mentoras 2027
+            </p>
+            </div>
           </div>
+          <Button asChild variant="outline" size="sm">
+            <Link to="/">
+              <ArrowLeft className="h-4 w-4" />
+              Volver al portal
+            </Link>
+          </Button>
         </header>
 
         <section className="mb-10" aria-label="Selecciona tu perfil">
