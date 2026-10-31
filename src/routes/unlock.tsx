@@ -6,6 +6,7 @@ import { unlockSite } from "@/lib/gate.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/session";
+import wifLogo from "@/assets/wif-logo.png.asset.json";
 
 export const Route = createFileRoute("/unlock")({
   head: () => ({ meta: [
@@ -47,7 +48,7 @@ function UnlockPage() {
   return <main className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
     <div className="w-full max-w-sm">
       <div className="mb-8 text-center">
-        <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-lg bg-primary text-primary-foreground">WIF</div>
+        <img src={wifLogo.url} alt="Women in Finance" className="mx-auto mb-5 h-14 w-auto rounded-lg" />
         <h1 className="text-3xl font-light">Portal interno</h1>
         <p className="mt-2 text-sm text-muted-foreground">Inscripción al programa de mentoras</p>
       </div>

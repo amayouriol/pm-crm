@@ -16,6 +16,7 @@ import { SessionProvider, useSession } from "../lib/session";
 import { Toaster } from "sonner";
 import { exitView } from "@/lib/exit-view";
 import { Button } from "@/components/ui/button";
+import wifLogo from "@/assets/wif-logo.png.asset.json";
 
 function NotFoundComponent() {
   return (
@@ -90,7 +91,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
@@ -123,9 +124,7 @@ function TopBar() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-6 py-3">
         <Link to="/dashboard" className="flex items-center gap-2">
-          <div className="grid h-8 w-8 place-items-center rounded-md bg-primary text-primary-foreground text-sm">
-            WIF
-          </div>
+          <img src={wifLogo.url} alt="Women in Finance" className="h-8 w-auto rounded-md" />
           <div className="leading-tight">
             <div className="text-sm">Women in Finance</div>
             <div className="text-xs text-muted-foreground">Portal de Mentoría</div>
