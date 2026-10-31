@@ -10,7 +10,7 @@ import { ApplicationOverview } from "@/components/ApplicationOverview";
 import { ClipboardList, MousePointerClick } from "lucide-react";
 import wifLogo from "@/assets/wif-logo.png.asset.json";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/inscripcion")({
   beforeLoad: () => requireSiteAccess(),
   head: () => ({ meta: [
     { title: "Resumen del equipo | WIF Mentoría" },
