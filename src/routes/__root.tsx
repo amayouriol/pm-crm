@@ -127,7 +127,7 @@ function TopBar() {
           <img src={wifLogo.url} alt="Women in Finance" className="h-8 w-auto rounded-md" />
           <div className="leading-tight">
             <div className="text-sm">Women in Finance</div>
-            <div className="text-xs text-muted-foreground">Portal de Mentoría</div>
+            <div className="text-xs text-muted-foreground">Portal interno</div>
           </div>
         </Link>
         <nav className="flex items-center gap-2 text-sm">
