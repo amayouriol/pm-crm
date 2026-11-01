@@ -90,7 +90,7 @@ function ExecutiveSummary({ data }: { data: Record<string, string> }) {
         </Button>
       </div>
       {summary.data ? (
-        <div className="space-y-1 break-words">{summary.data.split(/\\r?\\n/).map(renderSummaryLine)}</div>
+        <div className="space-y-1 break-words">{summary.data.split(/\r?\n/).map(renderSummaryLine)}</div>
       ) : (
         <p className="text-xs text-muted-foreground">
           Genera un resumen de las respuestas y del perfil profesional. El PDF del CV aún no se procesa.
