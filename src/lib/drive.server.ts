@@ -55,7 +55,7 @@ function driveRequestError(status: number, action: "consultar el archivo" | "des
 export async function downloadApplicantCv(value: string): Promise<Uint8Array> {
   const id = driveFileId(value);
   const headers = driveHeaders();
-  const metadataUrl = `${DRIVE_GATEWAY}/files/${encodeURIComponent(id)}?fields=mimeType%2Csize`;
+  const metadataUrl = `${DRIVE_GATEWAY}/files/${encodeURIComponent(id)}?supportsAllDrives=true&fields=mimeType%2Csize`;
   const metadataResponse = await fetch(metadataUrl, { headers });
   if (!metadataResponse.ok) throw driveRequestError(metadataResponse.status, "consultar el archivo");
 
@@ -72,7 +72,7 @@ export async function downloadApplicantCv(value: string): Promise<Uint8Array> {
   }
 
   const fileResponse = await fetch(
-    `${DRIVE_GATEWAY}/files/${encodeURIComponent(id)}?alt=media`,
+    `${DRIVE_GATEWAY}/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`,
     { headers: { ...headers, Accept: "application/pdf" } },
   );
   if (!fileResponse.ok) throw driveRequestError(fileResponse.status, "descargar su contenido");
