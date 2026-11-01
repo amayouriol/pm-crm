@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState, type FormEvent } from "react";
 import { LockKeyhole } from "lucide-react";
@@ -22,7 +22,6 @@ export const Route = createFileRoute("/unlock")({
 });
 
 function UnlockPage() {
-  const router = useRouter();
   const unlock = useServerFn(unlockSite);
   const { setSession } = useSession();
   const [pending, setPending] = useState(false);
@@ -38,7 +37,7 @@ function UnlockPage() {
       if (!result.ok) setError("Contraseña incorrecta.");
       else {
         setSession(null);
-        await router.navigate({ to: "/", replace: true });
+        window.location.replace("/");
       }
     } catch {
       setError("No se pudo ingresar. Inténtalo nuevamente.");
