@@ -38,17 +38,33 @@ function driveFileId(value: string): string {
   return id;
 }
 
-function driveRequestError(status: number, action: "consultar el archivo" | "descargar su contenido"): Error {
+async function driveRequestError(
+  response: Response,
+  action: "consultar el archivo" | "descargar su contenido",
+): Promise<Error> {
+  const status = response.status;
+  const payload = (await response.clone().json().catch(() => null)) as
+    | { error?: { message?: string; errors?: Array<{ reason?: string }> } }
+    | null;
+  const reason = payload?.error?.errors?.[0]?.reason;
+  const detail = (payload?.error?.message ?? "")
+    .replace(/(?:File not found:\s*)?[A-Za-z0-9_-]{20,}/g, "[ID oculto]")
+    .slice(0, 240);
+
+  // Keep upstream diagnostics server-side; never log the applicant's Drive file ID.
+  console.error("[drive] request failed", { status, action, reason, detail });
+
+  const diagnostic = reason ? ` código ${reason}` : "";
   if (status === 401 || status === 403) {
-    return new Error("Google Drive no permitió leer este CV. Confirma que la cuenta conectada tenga acceso de lector al archivo o a su carpeta.");
+    return new Error(`Google Drive no permitió leer este CV (error ${status}${diagnostic}). Confirma el acceso de lector de la conexión al archivo.`);
   }
   if (status === 404 && action === "consultar el archivo") {
-    return new Error("Drive no encontró el archivo indicado por el enlace del CV. Revisa que el enlace siga vigente y que la cuenta conectada pueda ver la carpeta de archivos del formulario.");
+    return new Error(`Drive no encontró el archivo del enlace del CV al consultar sus metadatos (error 404${diagnostic}). Verifica que el enlace guardado en la fila apunte a ese archivo.`);
   }
   if (status === 404) {
-    return new Error("Drive encontró el CV, pero el conector no pudo descargar su contenido. Verifica la conexión Google Drive del proyecto.");
+    return new Error(`Drive encontró el CV, pero falló la descarga del archivo (error 404${diagnostic}).`);
   }
-  return new Error(`No se pudo ${action} en Google Drive (error ${status}).`);
+  return new Error(`No se pudo ${action} en Google Drive (error ${status}${diagnostic}).`);
 }
 
 /** Downloads one private applicant PDF through the Lovable Google Drive connector. */
@@ -57,7 +73,7 @@ export async function downloadApplicantCv(value: string): Promise<Uint8Array> {
   const headers = driveHeaders();
   const metadataUrl = `${DRIVE_GATEWAY}/files/${encodeURIComponent(id)}?supportsAllDrives=true&fields=mimeType%2Csize`;
   const metadataResponse = await fetch(metadataUrl, { headers });
-  if (!metadataResponse.ok) throw driveRequestError(metadataResponse.status, "consultar el archivo");
+  if (!metadataResponse.ok) throw await driveRequestError(metadataResponse, "consultar el archivo");
 
   const metadata = (await metadataResponse.json()) as { mimeType?: string; size?: string };
   if (metadata.mimeType !== "application/pdf") {
@@ -75,7 +91,7 @@ export async function downloadApplicantCv(value: string): Promise<Uint8Array> {
     `${DRIVE_GATEWAY}/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`,
     { headers: { ...headers, Accept: "application/pdf" } },
   );
-  if (!fileResponse.ok) throw driveRequestError(fileResponse.status, "descargar su contenido");
+  if (!fileResponse.ok) throw await driveRequestError(fileResponse, "descargar su contenido");
 
   const bytes = Buffer.from(await fileResponse.arrayBuffer());
   if (bytes.length === 0 || bytes.length > MAX_CV_BYTES) {
