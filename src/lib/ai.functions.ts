@@ -29,7 +29,7 @@ export const summarizeApplicant = createServerFn({ method: "POST" })
             ],
           },
           contents: [{ role: "user", parts: [{ text: data.profile }] }],
-          generationConfig: { maxOutputTokens: 500 },
+          generationConfig: { maxOutputTokens: 1600 },
         }),
       },
     );
