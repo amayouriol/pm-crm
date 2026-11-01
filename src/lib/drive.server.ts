@@ -38,12 +38,17 @@ function driveFileId(value: string): string {
   return id;
 }
 
-function driveRequestError(status: number): Error {
+function driveRequestError(status: number, action: "consultar el archivo" | "descargar su contenido"): Error {
   if (status === 401 || status === 403) {
-    return new Error("Google Drive no permitió leer este CV. Confirma que la cuenta conectada tenga acceso al archivo.");
+    return new Error("Google Drive no permitió leer este CV. Confirma que la cuenta conectada tenga acceso de lector al archivo o a su carpeta.");
   }
-  if (status === 404) return new Error("No se encontró el CV en Google Drive.");
-  return new Error(`No se pudo obtener el CV de Google Drive (error ${status}).`);
+  if (status === 404 && action === "consultar el archivo") {
+    return new Error("Drive no encontró el archivo indicado por el enlace del CV. Revisa que el enlace siga vigente y que la cuenta conectada pueda ver la carpeta de archivos del formulario.");
+  }
+  if (status === 404) {
+    return new Error("Drive encontró el CV, pero el conector no pudo descargar su contenido. Verifica la conexión Google Drive del proyecto.");
+  }
+  return new Error(`No se pudo ${action} en Google Drive (error ${status}).`);
 }
 
 /** Downloads one private applicant PDF through the Lovable Google Drive connector. */
@@ -52,7 +57,7 @@ export async function downloadApplicantCv(value: string): Promise<Uint8Array> {
   const headers = driveHeaders();
   const metadataUrl = `${DRIVE_GATEWAY}/files/${encodeURIComponent(id)}?fields=mimeType%2Csize`;
   const metadataResponse = await fetch(metadataUrl, { headers });
-  if (!metadataResponse.ok) throw driveRequestError(metadataResponse.status);
+  if (!metadataResponse.ok) throw driveRequestError(metadataResponse.status, "consultar el archivo");
 
   const metadata = (await metadataResponse.json()) as { mimeType?: string; size?: string };
   if (metadata.mimeType !== "application/pdf") {
@@ -70,7 +75,7 @@ export async function downloadApplicantCv(value: string): Promise<Uint8Array> {
     `${DRIVE_GATEWAY}/files/${encodeURIComponent(id)}?alt=media`,
     { headers: { ...headers, Accept: "application/pdf" } },
   );
-  if (!fileResponse.ok) throw driveRequestError(fileResponse.status);
+  if (!fileResponse.ok) throw driveRequestError(fileResponse.status, "descargar su contenido");
 
   const bytes = Buffer.from(await fileResponse.arrayBuffer());
   if (bytes.length === 0 || bytes.length > MAX_CV_BYTES) {
