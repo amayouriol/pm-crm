@@ -68,7 +68,12 @@ function ExecutiveSummary({ data }: { data: Record<string, string> }) {
   const summary = useMutation({
     mutationFn: async () => {
       if (!profile) throw new Error("Este perfil no tiene respuestas para resumir.");
-      const result = await summarizeApplicant({ data: { profile } });
+      const result = await summarizeApplicant({
+        data: {
+          profile,
+          cvUrl: data["Sube tu CV"]?.trim() || undefined,
+        },
+      });
       return result.summary;
     },
     onError: (error: Error) => toast.error(`IA: ${error.message}`),
@@ -93,7 +98,7 @@ function ExecutiveSummary({ data }: { data: Record<string, string> }) {
         <div className="space-y-1 break-words">{summary.data.split(/\r?\n/).map(renderSummaryLine)}</div>
       ) : (
         <p className="text-xs text-muted-foreground">
-          Genera un resumen de las respuestas y del perfil profesional. El PDF del CV aún no se procesa.
+          Genera un resumen de las respuestas y del PDF del CV, si está disponible.
         </p>
       )}
     </Card>
