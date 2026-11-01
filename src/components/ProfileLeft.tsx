@@ -67,15 +67,10 @@ function ExecutiveSummary({ data }: { data: Record<string, string> }) {
 
   const summary = useMutation({
     mutationFn: async () => {
-      if (!profile && !data["Sube tu CV"]?.trim()) {
-        throw new Error("Este perfil no tiene respuestas ni un CV para resumir.");
+      if (!profile) {
+        throw new Error("Este perfil no tiene respuestas del formulario para resumir.");
       }
-      const result = await summarizeApplicant({
-        data: {
-          profile,
-          cvUrl: data["Sube tu CV"]?.trim() || undefined,
-        },
-      });
+      const result = await summarizeApplicant({ data: { profile } });
       return result.summary;
     },
     onError: (error: Error) => toast.error(`IA: ${error.message}`),
@@ -91,7 +86,7 @@ function ExecutiveSummary({ data }: { data: Record<string, string> }) {
           size="sm"
           variant="outline"
           onClick={() => summary.mutate()}
-          disabled={summary.isPending || (!profile && !data["Sube tu CV"]?.trim())}
+          disabled={summary.isPending || !profile}
         >
           {summary.isPending ? "Generando…" : summary.data ? "Regenerar" : "Generar resumen"}
         </Button>
@@ -100,7 +95,7 @@ function ExecutiveSummary({ data }: { data: Record<string, string> }) {
         <div className="space-y-1 break-words">{summary.data.split(/\r?\n/).map(renderSummaryLine)}</div>
       ) : (
         <p className="text-xs text-muted-foreground">
-          Genera un resumen de las respuestas y del PDF del CV, si está disponible.
+          Para este demo, el resumen usa solo las respuestas del formulario; no incluye el CV.
         </p>
       )}
     </Card>
