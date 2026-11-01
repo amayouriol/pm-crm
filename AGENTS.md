@@ -14,7 +14,7 @@
 - LinkedIn summaries are transient and do not write to Sheets or create new columns; copying is explicit.
 - Protect every CRM content route with the encrypted shared-team session and every private Sheets/AI server function with requireTeamGate; route guards alone do not secure RPC endpoints.
 - Keep team-password comparison and cookie utilities in a dynamically imported server-only module; runtime secrets are read inside server handlers or server middleware, never in client code.
-- Keep encrypted team cookies Secure, HttpOnly, SameSite=None and Partitioned so embedded previews retain access without cross-site session sharing; preserve server-function CSRF protection.
+- Keep encrypted team cookies Secure and HttpOnly: SameSite=None+Partitioned only on preview hosts (embedded iframe), SameSite=Lax on the published site because some browsers drop partitioned cookies top-level; preserve server-function CSRF protection.
 - Coordinate profile-exit cache cancellation, cache clearing, profile reset, and selector navigation in the browser-safe exitView helper so leaving a view remains separate from revoking the encrypted team gate.
 - Keep team-wide application analytics in a browser-safe shared overview on the password-protected index; derive weekly cohorts from existing Sheets timestamps and decisions without adding columns, leaving staff routes operational.
 - Assign unassigned applicants automatically in listApplicants via the pure auto-assign planner (balanced counts, random ties, referenced coordinators excluded); never reassign existing reviewers.
