@@ -67,7 +67,9 @@ function ExecutiveSummary({ data }: { data: Record<string, string> }) {
 
   const summary = useMutation({
     mutationFn: async () => {
-      if (!profile) throw new Error("Este perfil no tiene respuestas para resumir.");
+      if (!profile && !data["Sube tu CV"]?.trim()) {
+        throw new Error("Este perfil no tiene respuestas ni un CV para resumir.");
+      }
       const result = await summarizeApplicant({
         data: {
           profile,
@@ -89,7 +91,7 @@ function ExecutiveSummary({ data }: { data: Record<string, string> }) {
           size="sm"
           variant="outline"
           onClick={() => summary.mutate()}
-          disabled={summary.isPending || !profile}
+          disabled={summary.isPending || (!profile && !data["Sube tu CV"]?.trim())}
         >
           {summary.isPending ? "Generando…" : summary.data ? "Regenerar" : "Generar resumen"}
         </Button>

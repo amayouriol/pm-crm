@@ -23,7 +23,7 @@ export const summarizeApplicant = createServerFn({ method: "POST" })
     const userParts: Array<{ text: string } | { inline_data: { mime_type: string; data: string } }> = [
       {
         text: data.profile
-          ? `Respuestas del formulario:\\n${data.profile}`
+          ? `Respuestas del formulario:\n${data.profile}`
           : "No hay respuestas de formulario disponibles.",
       },
     ];
