@@ -23,28 +23,27 @@ function copy(text: string, label: string) {
 
 function renderSummaryLine(line: string, index: number) {
   const cleaned = line
-    .replace(/^\\s{0,3}#{1,3}\\s*/, "")
-    .replace(/\\*\\*/g, "")
+    .replace(/^\s{0,3}#{1,3}\s*/, "")
+    .replace(/\*\*/g, "")
     .trim();
   if (!cleaned) return null;
 
-  const isHeading = /^(?:\\d+[.)]\\s*)?(requisitos base|dimensiones del perfil buscado|síntesis)\\b/i.test(cleaned);
+  const isHeading = /^(?:\d+[.)]\s*)?(requisitos base|dimensiones del perfil buscado|síntesis)\b/i.test(cleaned);
   if (isHeading) {
     return <h4 key={index} className="pt-3 text-sm font-semibold text-primary first:pt-0">{cleaned}</h4>;
   }
 
-  const bullet = cleaned.replace(/^[-*•]\\s*/, "");
+  const bullet = cleaned.replace(/^[-*•]\s*/, "");
   const colon = bullet.indexOf(":");
   return (
     <p key={index} className="text-sm leading-relaxed text-foreground">
-      {cleaned.match(/^[-*•]\\s*/) && <span className="mr-2 text-primary">•</span>}
+      {cleaned.match(/^[-*•]\s*/) && <span className="mr-2 text-primary">•</span>}
       {colon > 0 && colon < 80 ? (
         <><strong>{bullet.slice(0, colon + 1)}</strong>{bullet.slice(colon + 1)}</>
       ) : bullet}
     </p>
   );
 }
-
 function ExecutiveSummary({ data }: { data: Record<string, string> }) {
   const fields: Array<[string, string | undefined]> = [
     ["Universidad", data["¿Dónde estudiaste?"]],
