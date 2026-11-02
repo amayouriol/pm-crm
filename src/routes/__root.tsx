@@ -9,13 +9,16 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { useServerFn } from "@tanstack/react-start";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SessionProvider, useSession } from "../lib/session";
 import { Toaster } from "sonner";
 import { exitView } from "@/lib/exit-view";
+import { lockSite } from "@/lib/gate.functions";
 import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 import wifLogo from "@/assets/wif-logo.png.asset.json";
 
 function NotFoundComponent() {
@@ -114,12 +117,35 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function SignOutButton() {
+  const router = useRouter();
+  const { queryClient } = Route.useRouteContext();
+  const { setSession } = useSession();
+  const lock = useServerFn(lockSite);
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="ml-2 text-xs text-muted-foreground hover:text-foreground"
+      onClick={async () => {
+        await queryClient.cancelQueries();
+        queryClient.clear();
+        setSession(null);
+        await lock();
+        router.navigate({ to: "/unlock", replace: true });
+      }}
+    >
+      <LogOut className="h-3.5 w-3.5" />
+      Cerrar sesión
+    </Button>
+  );
+}
+
 function TopBar() {
   const { session, setSession } = useSession();
   const router = useRouter();
   const { queryClient } = Route.useRouteContext();
   if (router.state.location.pathname === "/unlock") return null;
-  if (!session) return null;
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-6 py-3">
@@ -131,20 +157,25 @@ function TopBar() {
           </div>
         </Link>
         <nav className="flex items-center gap-2 text-sm">
-          <span className="ml-2 hidden text-xs text-muted-foreground md:inline">{session.nombreCompleto}</span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => exitView({
-              cancelQueries: () => queryClient.cancelQueries(),
-              clearQueries: () => queryClient.clear(),
-              clearProfile: () => setSession(null),
-              showProfiles: () => router.navigate({ to: "/inscripcion", replace: true }),
-            })}
-            className="ml-2 rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
-          >
-            Salir de vista
-          </Button>
+          {session && (
+            <>
+              <span className="ml-2 hidden text-xs text-muted-foreground md:inline">{session.nombreCompleto}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exitView({
+                  cancelQueries: () => queryClient.cancelQueries(),
+                  clearQueries: () => queryClient.clear(),
+                  clearProfile: () => setSession(null),
+                  showProfiles: () => router.navigate({ to: "/inscripcion", replace: true }),
+                })}
+                className="ml-2 rounded-md border border-border px-3 py-1.5 text-xs hover:bg-accent"
+              >
+                Salir de vista
+              </Button>
+            </>
+          )}
+          <SignOutButton />
         </nav>
       </div>
     </header>
